@@ -1,13 +1,19 @@
 import './styles/main.scss'
 import Controller from './controller.js'
 
-const form = document.getElementById('rss-form')
-const input = document.getElementById('rss-url')
-const feedback = document.querySelector('.feedback')
-const urlsContainer = document.querySelector('.urls-container')
+const initApp = () => {
+  const form = document.getElementById('rss-form')
+  const input = document.getElementById('rss-url')
+  const feedback = document.querySelector('.feedback')
+  const urlsContainer = document.querySelector('.urls-container')
 
-const controller = new Controller(form, input, feedback, urlsContainer)
+  if (!form || !input || !feedback || !urlsContainer) {
+    throw new Error('Required elements not found')
+  }
 
-document.addEventListener('DOMContentLoaded', () => {
+  new Controller(form, input, feedback, urlsContainer)
+
   input.focus()
-})
+}
+
+document.addEventListener('DOMContentLoaded', initApp)
