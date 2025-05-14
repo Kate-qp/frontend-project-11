@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src",
-  "lint:fix": "eslint src --fix"
+    "lint:fix": "eslint src --fix"
   },
   "keywords": [],
   "author": "",
@@ -29,7 +29,9 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.4.1",
+    "on-change": "^5.0.1",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "yup": "^1.6.1"
   }
 }
