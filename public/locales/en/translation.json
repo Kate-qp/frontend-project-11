@@ -20,6 +20,7 @@
     "usernameTaken": "Username is already taken"
   },
   "rss": {
+    "preview": "Preview",
     "feed": "RSS Feed",
     "feedsSection": "Your Feeds",
     "postsSection": "Latest Posts",

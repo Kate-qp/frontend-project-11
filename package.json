@@ -34,7 +34,9 @@
     "i18next-http-backend": "^3.0.2",
     "on-change": "^5.0.1",
     "react": "^19.1.0",
+    "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.0",
+    "react-i18next": "^12.3.1",
     "yup": "^1.6.1"
   }
 }

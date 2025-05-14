@@ -20,6 +20,7 @@
     "usernameTaken": "Имя пользователя уже занято"
   },
   "rss": {
+    "preview": "Просмотр",
     "feed": "RSS Лента",
     "feedsSection": "Ваши ленты",
     "postsSection": "Последние посты",

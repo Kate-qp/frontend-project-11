@@ -1,12 +1,14 @@
 import onChange from 'on-change'
-import { i18n } from '../i18n' // Импортируем i18n экземпляр
+import { i18n } from '../i18n'
+import { PostPreviewModal } from './components/PostPreviewModal'
 
 export default class View {
-  constructor(form, input, feedback, urlsContainer) {
+  constructor(form, input, feedback, urlsContainer, postsContainer) {
     this.form = form
     this.input = input
     this.feedback = feedback
     this.urlsContainer = urlsContainer
+    this.postsContainer = postsContainer
     
     this.state = onChange({
       form: {
@@ -15,14 +17,25 @@ export default class View {
         value: '',
       },
       urls: [],
-      language: 'en', // Текущий язык
+      posts: [],
+      readPosts: new Set(),
+      previewPost: null,
+      language: 'en',
     }, this.render.bind(this))
+
+    this.modal = new PostPreviewModal({
+      post: this.state.previewPost,
+      onHide: () => { this.state.previewPost = null },
+    })
   }
 
-  // Метод для переключения языка
   setLanguage(lang) {
     this.state.language = lang
     i18n.changeLanguage(lang)
+  }
+
+  markAsRead(postId) {
+    this.state.readPosts.add(postId)
   }
 
   render(path) {
@@ -42,6 +55,14 @@ export default class View {
     if (path === 'urls' || path === 'language') {
       this.renderUrls()
     }
+
+    if (path === 'posts' || path === 'readPosts' || path === 'language') {
+      this.renderPosts()
+    }
+
+    if (path === 'previewPost') {
+      this.modal.update({ post: this.state.previewPost })
+    }
   }
 
   renderUrls() {
@@ -60,6 +81,44 @@ export default class View {
         </div>
       </div>
     `
+  }
+
+  renderPosts() {
+    this.postsContainer.innerHTML = `
+      <div class="posts-section">
+        <h2 class="h5 mb-3">${i18n.t('rss.postsSection')}</h2>
+        <div class="list-group">
+          ${this.state.posts.length === 0
+            ? `<div class="text-muted">${i18n.t('rss.noPosts')}</div>`
+            : this.state.posts.map(post => `
+              <div class="list-group-item post-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h3 class="h6 ${this.state.readPosts.has(post.id) ? 'fw-normal' : 'fw-bold'}">
+                    ${post.title}
+                  </h3>
+                  <button 
+                    class="btn btn-outline-primary btn-sm preview-btn"
+                    data-id="${post.id}"
+                  >
+                    ${i18n.t('post.preview')}
+                  </button>
+                </div>
+                ${post.description ? `<p class="mt-2 mb-0">${post.description}</p>` : ''}
+              </div>
+            `).join('')
+          }
+        </div>
+      </div>
+    `
+
+    this.postsContainer.querySelectorAll('.preview-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const postId = btn.dataset.id
+        const post = this.state.posts.find(p => p.id === postId)
+        this.state.previewPost = post
+        this.markAsRead(postId)
+      })
+    })
   }
 
   resetForm() {
