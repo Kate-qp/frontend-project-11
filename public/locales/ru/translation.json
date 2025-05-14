@@ -18,5 +18,20 @@
   "errors": {
     "network": "Ошибка сети. Попробуйте позже.",
     "usernameTaken": "Имя пользователя уже занято"
+  },
+  "rss": {
+    "feed": "RSS Лента",
+    "feedsSection": "Ваши ленты",
+    "postsSection": "Последние посты",
+    "noFeeds": "Ленты не добавлены",
+    "noPosts": "Нет доступных постов",
+    "addFeed": "Добавить RSS-ленту",
+    "feedUrl": "URL ленты",
+    "updateInterval": "Обновление каждые 5 секунд",
+    "errors": {
+      "invalidUrl": "Некорректный URL RSS",
+      "parseError": "Ошибка чтения RSS-ленты",
+      "duplicateFeed": "Эта лента уже добавлена"
+    }
   }
 }

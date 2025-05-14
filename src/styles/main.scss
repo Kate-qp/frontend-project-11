@@ -1,1 +1,41 @@
-@import "bootstrap/scss/bootstrap"
+@use "bootstrap/scss/bootstrap" as *;
+
+.app-container {
+  max-width: 1200px
+  margin: 0 auto
+  padding: 20px
+}
+
+.rss-container {
+  margin-top: 40px
+  
+  #posts-container {
+    margin-top: 20px
+  }
+}
+
+.posts-container {
+  max-width: 800px
+  margin: 0 auto
+  
+  .post-item {
+    padding: 1rem
+    border-bottom: 1px solid #eee
+    margin-bottom: 1rem
+    
+    h3 a {
+      color: #0366d6
+      text-decoration: none
+    }
+    
+    p {
+      color: #666
+      font-size: 0.9rem
+    }
+    
+    small {
+      color: #999
+      font-size: 0.8rem
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import './styles/main.scss'
 import Controller from './controller.js'
+import 'bootstrap/dist/css/bootstrap-grid.min.css'
 
 const initApp = () => {
   const form = document.getElementById('rss-form')
