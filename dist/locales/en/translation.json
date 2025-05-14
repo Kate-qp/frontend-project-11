@@ -1,0 +1,38 @@
+{
+  "registration": {
+    "title": "Registration",
+    "fields": {
+      "username": "Username",
+      "password": "Password",
+      "confirmPassword": "Confirm Password"
+    },
+    "submit": "Sign Up",
+    "alreadyHaveAccount": "Already have an account? Log In"
+  },
+  "validation": {
+    "required": "{{field}} is required",
+    "min": "{{field}} must be at least {{count}} characters",
+    "max": "{{field}} must be at most {{count}} characters",
+    "passwordsMustMatch": "Passwords must match"
+  },
+  "errors": {
+    "network": "Network error. Please try again later.",
+    "usernameTaken": "Username is already taken"
+  },
+  "rss": {
+    "preview": "Preview",
+    "feed": "RSS Feed",
+    "feedsSection": "Your Feeds",
+    "postsSection": "Latest Posts",
+    "noFeeds": "No feeds added yet",
+    "noPosts": "No posts available",
+    "addFeed": "Add RSS Feed",
+    "feedUrl": "Feed URL",
+    "updateInterval": "Update every 5 seconds",
+    "errors": {
+      "invalidUrl": "Invalid RSS URL",
+      "parseError": "Failed to parse RSS feed",
+      "duplicateFeed": "This feed is already added"
+    }
+  }
+}

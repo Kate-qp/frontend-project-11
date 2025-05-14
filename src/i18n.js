@@ -1,33 +1,34 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import Backend from 'i18next-http-backend'
-import LanguageDetector from 'i18next-browser-languagedetector'
+import ruTranslation from '../public/locales/ru/translation.json'
 
 i18n
-  .use(Backend)
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'en',
+    resources: {
+      ru: {
+        translation: ruTranslation
+      }
+    },
+    lng: 'ru',
+    fallbackLng: 'ru',
     debug: false,
     interpolation: {
       escapeValue: false
-    },
-    backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json'
     }
   })
 
-// Настройка Yup для работы с i18next
 import { setLocale } from 'yup'
 
 setLocale({
   mixed: {
-    required: () => i18n.t('validation.required'),
-    notOneOf: () => i18n.t('validation.notOneOf')
+    required: 'validation.required',
+    notOneOf: 'validation.notOneOf'
   },
   string: {
-    url: () => i18n.t('validation.url')
+    url: 'validation.url',
+    min: 'validation.min',
+    max: 'validation.max'
   }
 })
 
