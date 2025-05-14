@@ -1,0 +1,22 @@
+{
+  "registration": {
+    "title": "Регистрация",
+    "fields": {
+      "username": "Имя пользователя",
+      "password": "Пароль",
+      "confirmPassword": "Подтвердите пароль"
+    },
+    "submit": "Зарегистрироваться",
+    "alreadyHaveAccount": "Уже есть аккаунт? Войти"
+  },
+  "validation": {
+    "required": "{{field}} обязательно для заполнения",
+    "min": "{{field}} должен содержать минимум {{count}} символов",
+    "max": "{{field}} должен содержать максимум {{count}} символов",
+    "passwordsMustMatch": "Пароли должны совпадать"
+  },
+  "errors": {
+    "network": "Ошибка сети. Попробуйте позже.",
+    "usernameTaken": "Имя пользователя уже занято"
+  }
+}
