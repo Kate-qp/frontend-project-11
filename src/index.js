@@ -1,20 +1,5 @@
-import './styles/main.scss'
-import Controller from './controller.js'
-import 'bootstrap/dist/css/bootstrap-grid.min.css'
+import './styles.scss';
+import 'bootstrap';
+import app from './App.js';
 
-const initApp = () => {
-  const form = document.getElementById('rss-form')
-  const input = document.getElementById('rss-url')
-  const feedback = document.querySelector('.feedback')
-  const urlsContainer = document.querySelector('.urls-container')
-
-  if (!form || !input || !feedback || !urlsContainer) {
-    throw new Error('Required elements not found')
-  }
-
-  new Controller(form, input, feedback, urlsContainer)
-
-  input.focus()
-}
-
-document.addEventListener('DOMContentLoaded', initApp)
+app();
