@@ -5,8 +5,8 @@
   "description": "[![Actions Status](https://github.com/Kate-qp/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Kate-qp/frontend-project-11/actions)\r [![CI](https://github.com/Kate-qp/frontend-project-11/actions/workflows/ci.yml/badge.svg)](https://github.com/ваш-логин/ваш-репозиторий/actions)\r [![Maintainability](https://api.codeclimate.com/v1/badges/ваш-идентификатор/maintainability)](https://codeclimate.com/github/Kate-qp/frontend-project-11/maintainability)",
   "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "webpack serve --mode development",
+    "build": "webpack --mode production",
     "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src",
@@ -23,15 +23,19 @@
     "@webpack-cli/generators": "^3.0.7",
     "babel-loader": "^10.0.0",
     "bootstrap": "^5.3.6",
+    "css-loader": "^7.1.2",
     "eslint": "^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.1.0",
     "html-webpack-plugin": "^5.6.3",
+    "mini-css-extract-plugin": "^2.9.2",
+    "postcss-loader": "^8.1.1",
     "sass": "^1.88.0",
-    "webpack": "^5.89.0",
-    "webpack-cli": "^5.1.4"
+    "webpack": "^5.99.8",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
     "@types/react": "^19.1.4",
