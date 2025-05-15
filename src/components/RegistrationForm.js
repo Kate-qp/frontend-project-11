@@ -1,46 +1,69 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
+import { fetchFeed } from '../utils/api'
+import { isValidUrl } from '../utils/validators'
 
-export default function RegistrationForm({ onSubmit, state }) {
-  const { t } = useTranslation()
-  const [url, setUrl] = React.useState('')
+export const RegistrationForm = ({ feeds, addNewFeed }) => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    onSubmit(url)
+    
+    const formData = new FormData(e.currentTarget)
+    const url = formData.get('url').trim()
+    
+    try {
+      if (!isValidUrl(url)) {
+        setError('invalidUrl')
+        return
+      }
+      
+      if (feeds.some(feed => feed.url === url)) {
+        setError('duplicate')
+        return
+      }
+      
+      setLoading(true)
+      const feedContent = await fetchFeed(url)
+      addNewFeed(url, feedContent)
+      
+    } catch (error) {
+      setError(error.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="mb-3">
-        <label htmlFor="url-input" className="form-label">
-          Ссылка RSS
-        </label>
+    <form onSubmit={handleSubmit} className="rss-form">
+      <div className="form-floating">
         <input
           id="url-input"
-          type="text"
-          className={`form-control ${state.error ? 'is-invalid' : ''}`}
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          name="url"
+          className={`form-control ${error ? 'is-invalid' : ''}`}
+          placeholder="ссылка RSS"
+          disabled={loading}
         />
-        {state.error && (
-          <div className="invalid-feedback" data-testid="error-message">
-            {t(`errors.${state.error}`)}
-          </div>
+        <label htmlFor="url-input">Ссылка RSS</label>
+        {error === 'invalidUrl' && (
+          <div className="invalid-feedback">Ссылка должна быть валидным URL</div>
         )}
-        {state.success && (
-          <div className="text-success" data-testid="success-message">
-            {t('success')}
-          </div>
+        {error === 'duplicate' && (
+          <div className="invalid-feedback">RSS уже существует</div>
         )}
       </div>
+      
       <button
         type="submit"
         className="btn btn-primary"
-        disabled={state.process === 'loading'}
-        data-testid="submit-button"
+        disabled={loading}
       >
-        {state.process === 'loading' ? 'Загрузка...' : 'Добавить'}
+        {loading ? (
+          <>
+            <span className="spinner-border spinner-border-sm me-2"></span>
+            Загрузка...
+          </>
+        ) : 'Добавить'}
       </button>
     </form>
   )

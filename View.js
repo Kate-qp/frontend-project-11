@@ -1,130 +1,68 @@
-import onChange from 'on-change'
-import { i18n } from '../i18n'
-import { PostPreviewModal } from './components/PostPreviewModal'
-
-export default class View {
-  constructor(form, input, feedback, urlsContainer, postsContainer) {
-    this.form = form
-    this.input = input
-    this.feedback = feedback
-    this.urlsContainer = urlsContainer
-    this.postsContainer = postsContainer
-    
-    this.state = onChange({
-      form: {
-        valid: true,
-        errors: [],
-        value: '',
-      },
-      urls: [],
-      posts: [],
-      readPosts: new Set(),
-      previewPost: null,
-      language: 'en',
-    }, this.render.bind(this))
-
-    this.modal = new PostPreviewModal({
-      post: this.state.previewPost,
-      onHide: () => { this.state.previewPost = null },
-    })
-  }
-
-  setLanguage(lang) {
-    this.state.language = lang
-    i18n.changeLanguage(lang)
-  }
-
-  markAsRead(postId) {
-    this.state.readPosts.add(postId)
-  }
-
-  render(path) {
-    if (path === 'form.valid') {
-      this.input.classList.toggle('is-invalid', !this.state.form.valid)
+export const renderPosts = (posts, viewMessage, i18next, elements) => {
+  const newList = document.createElement('ul')
+  posts.forEach((el) => {
+    const item = document.createElement('li')
+    item.classList.add('list-group-item', 'border-0', 'd-flex', 'justify-content-between')
+    const link = document.createElement('a')
+    link.textContent = el.name
+    link.href = el.link
+    if (el.isReaded === false) {
+      link.classList.add('fw-bold')
+    } else {
+      link.classList.add('fw-normal')
     }
-    
-    if (path === 'form.errors') {
-      this.feedback.textContent = this.state.form.errors.join(', ')
-      this.feedback.classList.toggle('text-danger', !this.state.form.valid)
-    }
-    
-    if (path === 'form.value') {
-      this.input.value = this.state.form.value
-    }
-    
-    if (path === 'urls' || path === 'language') {
-      this.renderUrls()
-    }
+    link.setAttribute('data-id', el.id)
+    const button = document.createElement('button')
+    button.textContent = i18next.t(viewMessage)
+    button.setAttribute('data-bs-toggle', 'modal')
+    button.setAttribute('data-bs-target', '#exampleModal')
+    button.setAttribute('data-id', el.id)
+    item.append(link, button)
+    newList.append(item)
+  })
+  elements.postsList.replaceChildren(...newList.children)
+}
 
-    if (path === 'posts' || path === 'readPosts' || path === 'language') {
-      this.renderPosts()
-    }
+export const renderModal = (post, selectors) => {
+  const link = selectors.postsList.querySelector(`[data-id="${post.id}"]`)
+  const elements = selectors
+  elements.modalTitle.textContent = post.name
+  link.classList.remove('fw-bold')
+  link.classList.add('fw-normal')
+  elements.modalBody.textContent = post.postDescription
+}
 
-    if (path === 'previewPost') {
-      this.modal.update({ post: this.state.previewPost })
-    }
+export const renderFeeds = (title, description, elements) => {
+  const item = document.createElement('li')
+  item.classList.add('list-group-item', 'border-0')
+  const feedTitle = document.createElement('h3')
+  feedTitle.textContent = title
+  const feedDescription = document.createElement('p')
+  feedDescription.textContent = description
+  item.append(feedTitle, feedDescription)
+  elements.feedsList.append(item)
+}
+
+export const renderState = (message, i18next, selectors) => {
+  const elements = selectors
+  if (message === 'success') {
+    elements.input.classList.remove('is-invalid')
+  } else {
+    elements.input.classList.add('is-invalid')
   }
+  elements.messageNode.textContent = i18next.t(message)
+}
 
-  renderUrls() {
-    this.urlsContainer.innerHTML = `
-      <div class="feeds-section mb-4">
-        <h2 class="h5 mb-3">${i18n.t('rss.feedsSection')}</h2>
-        <div class="list-group">
-          ${this.state.urls.length === 0 
-            ? `<div class="text-muted">${i18n.t('rss.noFeeds')}</div>`
-            : this.state.urls.map(url => `
-              <div class="list-group-item">
-                <h3 class="h6">${url}</h3>
-              </div>
-            `).join('')
-          }
-        </div>
-      </div>
-    `
-  }
+export const blockUi = (selectors) => {
+  const elements = selectors
+  elements.submit.disabled = true
+  elements.input.setAttribute('readonly', 'true')
+}
 
-  renderPosts() {
-    this.postsContainer.innerHTML = `
-      <div class="posts-section">
-        <h2 class="h5 mb-3">${i18n.t('rss.postsSection')}</h2>
-        <div class="list-group">
-          ${this.state.posts.length === 0
-            ? `<div class="text-muted">${i18n.t('rss.noPosts')}</div>`
-            : this.state.posts.map(post => `
-              <div class="list-group-item post-item">
-                <div class="d-flex justify-content-between align-items-center">
-                  <h3 class="h6 ${this.state.readPosts.has(post.id) ? 'fw-normal' : 'fw-bold'}">
-                    ${post.title}
-                  </h3>
-                  <button 
-                    class="btn btn-outline-primary btn-sm preview-btn"
-                    data-id="${post.id}"
-                  >
-                    ${i18n.t('post.preview')}
-                  </button>
-                </div>
-                ${post.description ? `<p class="mt-2 mb-0">${post.description}</p>` : ''}
-              </div>
-            `).join('')
-          }
-        </div>
-      </div>
-    `
-
-    this.postsContainer.querySelectorAll('.preview-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const postId = btn.dataset.id
-        const post = this.state.posts.find(p => p.id === postId)
-        this.state.previewPost = post
-        this.markAsRead(postId)
-      })
-    })
-  }
-
-  resetForm() {
-    this.state.form.value = ''
-    this.state.form.valid = true
-    this.state.form.errors = []
-    this.input.focus()
-  }
+export const unBlockUi = (selectors) => {
+  const elements = selectors
+  elements.submit.disabled = false
+  elements.input.removeAttribute('readonly')
+  elements.input.value = ''
+  elements.input.focus()
 }

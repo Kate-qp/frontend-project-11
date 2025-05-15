@@ -1,17 +1,33 @@
 import { defineConfig } from 'vite'
-import path from 'path'
+import react from '@vitejs/plugin-react'
+import { fileURLToPath } from 'node:url'
+import { dirname, resolve } from 'node:path'
+
+const projectRoot = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      'bootstrap': path.resolve(__dirname, 'node_modules/bootstrap')
+  plugins: [react()],
+  server: {
+    fs: {
+      allow: [
+        resolve(projectRoot),
+        resolve(projectRoot, '..')
+      ]
     }
   },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        includePaths: [path.resolve(__dirname, 'node_modules')]
+    proxy: {
+      '/api': {
+        target: 'https://allorigins.hexlet.app',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: false
       }
+    }
+  },
+  resolve: {
+    alias: {
+      '@': resolve(dirname(fileURLToPath(import.meta.url)), './src'),
+      'bootstrap': resolve(dirname(fileURLToPath(import.meta.url)), 'node_modules/bootstrap')
     }
   }
 })
