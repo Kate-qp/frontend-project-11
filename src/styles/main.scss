@@ -1,6 +1,1 @@
-$enable-deprecation-messages: false;
-$ignore-warnings: true;
-
-@use "~bootstrap/scss/functions" as *;
-@use "~bootstrap/scss/variables" as *;
-@use "~bootstrap/scss/mixins" as *;
+@use '~bootstrap/scss/bootstrap';
