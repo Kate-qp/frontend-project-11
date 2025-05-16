@@ -1,7 +1,7 @@
 const isValidXML = (document) => {
-  const errorElement = document.querySelector('parsererror');
-  return !errorElement;
-};
+  const errorElement = document.querySelector('parsererror')
+  return !errorElement
+}
 
 const getPosts = (xmlDocument) => {
   const postElements = xmlDocument.getElementsByTagName('item');

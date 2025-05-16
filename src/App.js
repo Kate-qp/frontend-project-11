@@ -1,7 +1,7 @@
 import i18next from 'i18next';
 import axios from 'axios';
-import watch from '.View.js';
-import validate from './validator.js';
+import watch from './view.js';
+import { validateUrl } from './validator.js';
 import parseRss from './parser.js';
 import resources from '../public/locales/ru/translation.json';
 
@@ -47,7 +47,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
 
     const url = new FormData(e.target).get('url');
     const urls = state.feeds.map((feed) => feed.url);
-    validate(url, urls)
+    validateUrl(url, urls)
       .then(() => {
         watchedState.form.isValid = true;
         watchedState.form.error = null;

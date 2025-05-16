@@ -1,12 +1,35 @@
-import i18n from 'i18next';
-import resources from './index.js';
+import i18next from 'i18next';
 
-export default () => {
-  const instance = i18n.createInstance();
-  instance.init({
+const setupI18n = () => {
+  return i18next.init({
     lng: 'ru',
     debug: false,
-    resources,
+    resources: {
+      ru: {
+        translation: {
+          rssAggregator: 'RSS агрегатор',
+          description: 'Начните читать RSS сегодня! Это легко, это красиво.',
+          example: 'Пример: https://ru.hexlet.io/lessons.rss',
+          submit: 'Добавить',
+          feeds: 'Фиды',
+          posts: 'Посты',
+          view: 'Просмотр',
+          success: 'RSS успешно загружен',
+          errors: {
+            required: 'Не должно быть пустым',
+            invalidUrl: 'Ссылка должна быть валидным URL',
+            exists: 'RSS уже существует',
+            network: 'Ошибка сети',
+            invalidRss: 'Ресурс не содержит валидный RSS',
+          },
+          modal: {
+            read: 'Читать полностью',
+            close: 'Закрыть',
+          },
+        },
+      },
+    },
   });
-  return instance;
 };
+
+export default setupI18n;
