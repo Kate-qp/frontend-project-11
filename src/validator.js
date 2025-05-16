@@ -1,25 +1,22 @@
 import * as yup from 'yup';
-import i18next from 'i18next';
 
-const setupYupLocale = () => {
-  yup.setLocale({
-    mixed: {
-      required: () => i18next.t('errors.required'),
-      notOneOf: () => i18next.t('errors.exists'),
-    },
-    string: {
-      url: () => i18next.t('errors.invalidUrl'),
-    },
-  });
-};
+yup.setLocale({
+  string: {
+    url: 'url.invalid',
+  },
+  mixed: {
+    required: 'url.required',
+    notOneOf: 'url.exists',
+  },
+});
 
-export function validateUrl(url, feeds) {
-  setupYupLocale();
-  
-  const schema = yup.string()
+export default (newUrl, urls) => {
+  const schema = yup
+    .string()
+    .trim()
     .required()
     .url()
-    .notOneOf(feeds.map((feed) => feed.url));
-    
-  return schema.validate(url);
-}
+    .notOneOf(urls);
+  return schema
+    .validate(newUrl, { abortEarly: true });
+};

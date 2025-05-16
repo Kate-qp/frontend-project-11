@@ -1,7 +1,7 @@
 const isValidXML = (document) => {
-  const errorElement = document.querySelector('parsererror')
-  return !errorElement
-}
+  const errorElement = document.querySelector('parsererror');
+  return !errorElement;
+};
 
 const getPosts = (xmlDocument) => {
   const postElements = xmlDocument.getElementsByTagName('item');
@@ -34,17 +34,5 @@ const getFeed = (xmlDocument) => {
   return {
     title: title ? title.textContent : null,
     description: description ? description.textContent : null,
-  };
-};
-
-export default (xml) => {
-  const xmlDocument = new DOMParser().parseFromString(xml, 'text/xml');
-
-  if (!isValidXML(xmlDocument)) {
-    throw new Error('rss.invalid');
-  }
-  return {
-    feed: getFeed(xmlDocument),
-    posts: getPosts(xmlDocument),
   };
 };

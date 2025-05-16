@@ -1,9 +1,9 @@
 import i18next from 'i18next';
 import axios from 'axios';
 import watch from './view.js';
-import { validateUrl } from './validator.js';
+import validateUrl from './validator.js';
 import parseRss from './parser.js';
-import resources from '../public/locales/ru/translation.json';
+import resources from '../public/ru/translation.json';
 
 const language = 'ru';
 const allOriginsProxyUrl = 'https://allorigins.hexlet.app/get';

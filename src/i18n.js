@@ -7,25 +7,18 @@ const setupI18n = () => {
     resources: {
       ru: {
         translation: {
-          rssAggregator: 'RSS агрегатор',
-          description: 'Начните читать RSS сегодня! Это легко, это красиво.',
-          example: 'Пример: https://ru.hexlet.io/lessons.rss',
-          submit: 'Добавить',
-          feeds: 'Фиды',
-          posts: 'Посты',
-          view: 'Просмотр',
-          success: 'RSS успешно загружен',
-          errors: {
-            required: 'Не должно быть пустым',
+          validation: {
             invalidUrl: 'Ссылка должна быть валидным URL',
-            exists: 'RSS уже существует',
-            network: 'Ошибка сети',
-            invalidRss: 'Ресурс не содержит валидный RSS',
+            duplicateUrl: 'RSS уже существует',
+            required: 'Обязательное поле',
           },
-          modal: {
-            read: 'Читать полностью',
-            close: 'Закрыть',
+          errors: {
+            network_error: 'Ошибка сети',
+            request_timed_out: 'Превышено время ожидания',
+            'rss.invalid': 'Ресурс не содержит валидный RSS',
           },
+          submit: 'Добавить',
+          loading: 'Загрузка...',
         },
       },
     },
