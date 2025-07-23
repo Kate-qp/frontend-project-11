@@ -1,4 +1,4 @@
-import * as yup from 'yup';
+import * as yup from 'yup'
 
 yup.setLocale({
   string: {
@@ -8,7 +8,7 @@ yup.setLocale({
     required: 'url.required',
     notOneOf: 'url.exists',
   },
-});
+})
 
 export default (newUrl, urls) => {
   const schema = yup
@@ -16,7 +16,7 @@ export default (newUrl, urls) => {
     .trim()
     .required()
     .url()
-    .notOneOf(urls);
+    .notOneOf(urls)
   return schema
-    .validate(newUrl, { abortEarly: true });
-};
+    .validate(newUrl, { abortEarly: true })
+}
