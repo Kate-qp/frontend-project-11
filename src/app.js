@@ -9,11 +9,11 @@ const language = 'ru'
 const allOriginsProxyUrl = 'https://allorigins.hexlet.app/get'
 const errorsCodes = {
   ERR_NETWORK: new Error('network_error'),
-  ECONNABORTED: new Error('request_timed_out')
+  ECONNABORTED: new Error('request_timed_out'),
 }
 const defaultTimeout = 5000
 
-const getRssData = (url) => {
+const getRssData = url => {
   const objectUrl = new URL(allOriginsProxyUrl)
   objectUrl.searchParams.set('disableCache', 'true')
   objectUrl.searchParams.set('url', url)
@@ -24,7 +24,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const state = { ...initState }
   const watchedState = watch(state, selectors, i18nextInstance)
 
-  const getFeedRequest = (url) => {
+  const getFeedRequest = url => {
     axiosInstance.get(getRssData(url))
       .then(({ data }) => {
         const { feed, posts } = parseRss(data.contents)
@@ -62,7 +62,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       })
   }
 
-  const postExist = (postId) => state.posts.some((post) => post.id === postId)
+  const postExist = (postId) => state.posts.some(post => post.id === postId)
 
   const readPost = (e) => {
     const readPostId = e.target.dataset.id

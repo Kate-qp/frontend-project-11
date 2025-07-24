@@ -72,7 +72,7 @@ const createCardUl = (buttonName, entityType, i18nextInstance) => {
   return card
 }
 
-const clearDiv = (div) => {
+const clearDiv = div => {
   const updatedDiv = div
   updatedDiv.innerHTML = ''
 }
@@ -97,7 +97,7 @@ const showFeeds = (div, state, i18nextInstance) => {
   })
 }
 
-const isViewedPosts = (postId, viewedPosts) => viewedPosts.find((post) => post.id === postId)
+const isViewedPosts = (postId, viewedPosts) => viewedPosts.find(post => post.id === postId)
 
 const setPost = (post, buttonName, state) => {
   const li = document.createElement('li')

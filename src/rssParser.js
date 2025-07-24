@@ -45,6 +45,6 @@ export default (xml) => {
   }
   return {
     feed: getFeed(xmlDocument),
-    posts: getPosts(xmlDocument)
+    posts: getPosts(xmlDocument),
   }
 }
