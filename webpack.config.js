@@ -13,7 +13,7 @@ const config = {
     path: path.resolve(__dirname, 'dist'),
     filename: isProduction ? '[name].[contenthash].js' : '[name].js',
     clean: true,
-    assetModuleFilename: 'assets/[hash][ext][query]'
+    assetModuleFilename: 'assets/[hash][ext][query]',
   },
   devServer: {
     open: true,
@@ -41,7 +41,7 @@ const config = {
   optimization: {
     minimize: isProduction,
     minimizer: [
-      `...`,
+      '...',
       new CssMinimizerPlugin(),
     ],
     splitChunks: {
@@ -64,27 +64,27 @@ const config = {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
         type: 'asset/resource',
         generator: {
-          filename: 'assets/[hash][ext][query]'
-        }
+          filename: 'assets/[hash][ext][query]',
+        },
       },
       {
         test: /\.css$/i,
         use: [
           isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
           'css-loader',
-          'postcss-loader'
+          'postcss-loader',
         ],
       },
       {
         test: /\.s[ac]ss$/i,
-  use: [
-    isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
-    'css-loader',
-    {
-      loader: 'sass-loader',
-      options: {
-        sassOptions: {
-          quietDeps: true
+        use: [
+          isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                quietDeps: true,
               },
             },
           },
