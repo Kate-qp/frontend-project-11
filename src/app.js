@@ -9,7 +9,7 @@ const language = 'ru'
 const allOriginsProxyUrl = 'https://allorigins.hexlet.app/get'
 const errorsCodes = {
   ERR_NETWORK: new Error('network_error'),
-  ECONNABORTED: new Error('request_timed_out')
+  ECONNABORTED: new Error('request_timed_out'),
 }
 const defaultTimeout = 5000
 
@@ -62,13 +62,11 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       })
   }
 
-  const postExist = (postId) => state.posts.some((post) => (post.id === postId))
+  const postExist = (postId) => state.posts.some((post) => post.id === postId)
 
   const readPost = (e) => {
     const readPostId = e.target.dataset.id
-    if (!postExist(readPostId)) {
-      return
-    }
+    if (!postExist(readPostId)) return
     watchedState.openedPosts = [...watchedState.openedPosts, readPostId]
     watchedState.openedPostInModal = readPostId
   }
@@ -76,25 +74,23 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const getNewPosts = (posts) => {
     const initialPostsIds = state.posts.map(({ id }) => id)
     const initialPostsIdsSet = new Set(initialPostsIds)
-    return posts.filter(({ id }) => (!initialPostsIdsSet.has(id)))
+    return posts.filter(({ id }) => !initialPostsIdsSet.has(id))
   }
 
   const updatePosts = () => {
     const { feeds } = state
-
-    const promises = feeds.map(({ url }) => (axiosInstance.get(getRssData(url))  // Было без скобок
-  .then((response) => {
+    const promises = feeds.map(({ url }) => axiosInstance.get(getRssData(url))
+      .then((response) => {
         const parsedData = parseRss(response.data.contents)
         const newPosts = getNewPosts(parsedData.posts)
-        if (!newPosts.length) {
-          return
+        if (newPosts.length > 0) {
+          watchedState.posts.push(...newPosts)
         }
-        watchedState.posts.push(...newPosts)
       })
-      .catch((error) => error)))
+      .catch((error) => error))
 
     Promise.all(promises)
-      .then(() => {
+      .finally(() => {
         setTimeout(updatePosts, defaultTimeout)
       })
   }
@@ -113,43 +109,42 @@ export default () => {
     form: {
       objectForm: document.querySelector('.rss-form'),
       input: document.querySelector('#url-input'),
-      btnSubmit: document.querySelector('button[type="submit"]')
+      btnSubmit: document.querySelector('button[type="submit"]'),
     },
     feedback: document.querySelector('.feedback'),
     feedsDiv: document.querySelector('.feeds'),
     postsDiv: document.querySelector('.posts'),
-    modal: document.querySelector('#modal')
+    modal: document.querySelector('#modal'),
   }
 
   const initState = {
     form: {
       isValid: true,
-      error: null
+      error: null,
     },
     sendingProcess: {
       status: 'wait',
-      errors: null
+      errors: null,
     },
     feeds: [],
     posts: [],
     openedPosts: [],
     openedPostInModal: null,
-    language
+    language,
   }
 
   const i18nextInstance = i18next.createInstance()
   const axiosInstance = axios.create({
-    timeout: 10000
+    timeout: 10000,
   })
 
-  i18nextInstance
-    .init({
-      debug: false,
-      resources,
-      fallbackLng: initState.language
-    })
-    .then(() => {
-      app(selectors, initState, i18nextInstance, axiosInstance)
-    })
-    .catch((error) => { console.log(`Неизвестная ошибка: ${error.message}`) })
+  i18nextInstance.init({
+    debug: false,
+    resources,
+    fallbackLng: initState.language,
+  }).then(() => {
+    app(selectors, initState, i18nextInstance, axiosInstance)
+  }).catch((error) => {
+    console.log(`Неизвестная ошибка: ${error.message}`)
+  })
 }

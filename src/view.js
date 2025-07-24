@@ -107,7 +107,7 @@ const setPost = (post, buttonName, state) => {
     'justify-content-between',
     'align-items-start',
     'border-0',
-    'border-end-0'
+    'border-end-0',
   )
   const linkTag = document.createElement('a')
   const fontClass = !isViewedPosts(post.id, state.openedPosts) ? 'fw-bold' : 'fw-normal'
