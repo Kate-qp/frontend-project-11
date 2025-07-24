@@ -53,7 +53,7 @@ const handleProcess = (selectors, processStatus, i18nextInstance) => {
       break
     default:
       throw new Error(`Unknown 'sendingProcess.status': ${processStatus}`)
-}
+  }
 }
 
 const createCardUl = (buttonName, entityType, i18nextInstance) => {
@@ -107,7 +107,7 @@ const setPost = (post, buttonName, state) => {
     'justify-content-between',
     'align-items-start',
     'border-0',
-    'border-end-0',
+    'border-end-0'
   )
   const linkTag = document.createElement('a')
   const fontClass = !isViewedPosts(post.id, state.openedPosts) ? 'fw-bold' : 'fw-normal'
@@ -187,6 +187,6 @@ export default (state, selectors, i18nextInstance) => onChange(state, (path, val
       openModal(value, state.posts, selectors.modal)
       break
     default:
-      throw new Error(`Unknown 'path': ${path}`),
+      throw new Error(`Unknown 'path': ${path}`)
   }
 })
