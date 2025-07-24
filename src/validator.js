@@ -2,12 +2,12 @@ import * as yup from 'yup'
 
 yup.setLocale({
   string: {
-    url: 'url.invalid',
+    url: 'url.invalid'
   },
   mixed: {
     required: 'url.required',
-    notOneOf: 'url.exists',
-  },
+    notOneOf: 'url.exists'
+  }
 })
 
 export default (newUrl, urls) => {
