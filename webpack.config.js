@@ -1,11 +1,11 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === 'production'
 
 const config = {
   entry: './src/index.js',
@@ -113,14 +113,14 @@ const config = {
     maxAssetSize: 244 * 1024, // 244 KiB
     maxEntrypointSize: 244 * 1024, // 244 KiB
   },
-};
+}
 
 module.exports = () => {
   if (isProduction) {
-    config.mode = 'production';
+    config.mode = 'production'
   } else {
-    config.mode = 'development';
-    config.devtool = 'eval-source-map';
+    config.mode = 'development'
+    config.devtool = 'eval-source-map'
   }
-  return config;
-};
+  return config
+}

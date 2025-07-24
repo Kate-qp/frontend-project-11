@@ -19,4 +19,4 @@ export default {
     network_error: 'Ошибка сети',
     request_timed_out: 'Превышено время запроса',
   },
-};
+}
