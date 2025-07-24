@@ -1,6 +1,6 @@
 import onChange from 'on-change'
 
-const clearMessage = paragraph => {
+const clearMessage = (paragraph) => {
   const updatedParagraph = paragraph
   updatedParagraph.classList.remove('text-danger')
   updatedParagraph.classList.remove('text-success')
@@ -19,12 +19,12 @@ const showErrorMessage = (paragraph, error, i18nextInstance) => {
   paragraph.classList.add('text-danger')
 }
 
-const disableForm = rssForm => {
+const disableForm = (rssForm) => {
   rssForm.input.setAttribute('disabled', '')
   rssForm.btnSubmit.setAttribute('disabled', '')
 }
 
-const enableForm = rssForm => {
+const enableForm = (rssForm) => {
   rssForm.input.removeAttribute('disabled')
   rssForm.btnSubmit.removeAttribute('disabled')
 }
@@ -52,7 +52,7 @@ const handleProcess = (selectors, processStatus, i18nextInstance) => {
       selectors.form.input.focus()
       break
     default:
-      throw new Error(`Unknown 'sendingProcess.status': ${processStatus}`)
+      throw new Error(`Unknown 'sendingProcess.status': ${processStatus}`),
   }
 }
 
@@ -72,7 +72,7 @@ const createCardUl = (buttonName, entityType, i18nextInstance) => {
   return card
 }
 
-const clearDiv = div => {
+const clearDiv = (div) => {
   const updatedDiv = div
   updatedDiv.innerHTML = ''
 }
@@ -82,7 +82,7 @@ const showFeeds = (div, state, i18nextInstance) => {
   const entityType = 'ulFeeds'
   div.append(createCardUl('feeds.title', entityType, i18nextInstance))
   const ul = document.querySelector(`#${entityType}`)
-  state.feeds.forEach(feed => {
+  state.feeds.forEach((feed) => {
     const li = document.createElement('li')
     li.classList.add('list-group-item', 'border-0', 'border-end-0')
     const h3 = document.createElement('h3')
@@ -97,7 +97,7 @@ const showFeeds = (div, state, i18nextInstance) => {
   })
 }
 
-const isViewedPosts = (postId, viewedPosts) => viewedPosts.find(post => post.id === postId)
+const isViewedPosts = (postId, viewedPosts) => viewedPosts.find((post) => post.id === postId)
 
 const setPost = (post, buttonName, state) => {
   const li = document.createElement('li')
@@ -136,12 +136,12 @@ const showPosts = (div, state, i18nextInstance) => {
   div.append(createCardUl('posts.title', 'ulPosts', i18nextInstance))
   const ul = document.querySelector(`#${entityType}`)
   const buttonName = i18nextInstance.t('posts.button')
-  state.posts.forEach(post => ul.append(setPost(post, buttonName, state)))
+  state.posts.forEach((post) => ul.append(setPost(post, buttonName, state)))
 }
 
 const openModal = (postId, posts, modalDiv) => {
   const modal = modalDiv
-  const post = posts.find(currentPost => currentPost.id === postId)
+  const post = posts.find((currentPost) => currentPost.id === postId)
   modal.querySelector('.modal-title').textContent = post.title
   modal.querySelector('.modal-body').textContent = post.description
   const button = modal.querySelector('.full-article')
@@ -149,7 +149,7 @@ const openModal = (postId, posts, modalDiv) => {
 }
 
 const showModalPost = (posts, selectors) => {
-  posts.forEach(postId => {
+  posts.forEach((postId) => {
     const openedPost = selectors.postsDiv.querySelector(`[data-id="${postId}"]`)
     openedPost.classList.remove('fw-bold')
     openedPost.classList.add('fw-normal', 'link-secondary')
@@ -187,6 +187,6 @@ export default (state, selectors, i18nextInstance) => onChange(state, (path, val
       openModal(value, state.posts, selectors.modal)
       break
     default:
-      throw new Error(`Unknown 'path': ${path}`)
+      throw new Error(`Unknown 'path': ${path}`),
   }
 })
