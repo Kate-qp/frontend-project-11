@@ -62,7 +62,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       })
   }
 
-  const postExist = (postId) => state.posts.some((post) => post.id === postId)
+  const postExist = (postId) => state.posts.some((post) => (post.id === postId))
 
   const readPost = (e) => {
     const readPostId = e.target.dataset.id
@@ -76,14 +76,14 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const getNewPosts = (posts) => {
     const initialPostsIds = state.posts.map(({ id }) => id)
     const initialPostsIdsSet = new Set(initialPostsIds)
-    return posts.filter(({ id }) => !initialPostsIdsSet.has(id))
+    return posts.filter(({ id }) => (!initialPostsIdsSet.has(id)))
   }
 
   const updatePosts = () => {
     const { feeds } = state
 
-    const promises = feeds.map(({ url }) => axiosInstance.get(getRssData(url))
-      .then((response) => {
+    const promises = feeds.map(({ url }) => (axiosInstance.get(getRssData(url))  // Было без скобок
+  .then((response) => {
         const parsedData = parseRss(response.data.contents)
         const newPosts = getNewPosts(parsedData.posts)
         if (!newPosts.length) {
@@ -91,7 +91,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
         }
         watchedState.posts.push(...newPosts)
       })
-      .catch((error) => error))
+      .catch((error) => error)))
 
     Promise.all(promises)
       .then(() => {

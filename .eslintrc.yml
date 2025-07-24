@@ -26,8 +26,8 @@ globals:
 
 rules:
   semi: [2, 'never']
-  'arrow-parens': [2, 'as-needed']
-  'brace-style': [2, '1tbs', { allowSingleLine: true }]
+  'arrow-parens': 'off',
+  'brace-style': 'off',
   'global-require': 0
   'import/no-dynamic-require': 0
   'import/no-extraneous-dependencies': [2, { devDependencies: true }]
@@ -37,4 +37,3 @@ rules:
   'no-param-reassign': 0
   'no-console': 0
   'no-undef': [2, { typeof: true }]
-  

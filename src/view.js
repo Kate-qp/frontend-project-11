@@ -52,8 +52,8 @@ const handleProcess = (selectors, processStatus, i18nextInstance) => {
       selectors.form.input.focus()
       break
     default:
-      throw new Error(`Unknown 'sendingProcess.status': ${processStatus}`),
-  }
+      throw new Error(`Unknown 'sendingProcess.status': ${processStatus}`)
+}
 }
 
 const createCardUl = (buttonName, entityType, i18nextInstance) => {

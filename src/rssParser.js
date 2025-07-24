@@ -10,7 +10,7 @@ const getPosts = (xmlDocument) => {
     return []
   }
 
-  return Array.from(postElements).map(postElement => {
+  return Array.from(postElements).map((postElement) => {
     const pubDate = postElement.querySelector('pubDate')
     const title = postElement.querySelector('title')
     const description = postElement.querySelector('description')
@@ -37,7 +37,7 @@ const getFeed = (xmlDocument) => {
   }
 }
 
-export default xml => {
+export default (xml) => {
   const xmlDocument = new DOMParser().parseFromString(xml, 'text/xml')
 
   if (!isValidXML(xmlDocument)) {
