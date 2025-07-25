@@ -13,7 +13,7 @@ const errorsCodes = {
 }
 const defaultTimeout = 5000
 
-const getRssData = (url) => {
+const getRssData = url => {
   const objectUrl = new URL(allOriginsProxyUrl)
   objectUrl.searchParams.set('disableCache', 'true')
   objectUrl.searchParams.set('url', url)
@@ -24,7 +24,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const state = { ...initState }
   const watchedState = watch(state, selectors, i18nextInstance)
 
-  const getFeedRequest = (url) => {
+  const getFeedRequest = url => {
     axiosInstance.get(getRssData(url))
       .then(({ data }) => {
         const { feed, posts } = parseRss(data.contents)
@@ -36,13 +36,13 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
 
         selectors.form.input.classList.remove('is-invalid')
       })
-      .catch((error) => {
+      .catch(error => {
         watchedState.sendingProcess.status = 'failed'
         watchedState.sendingProcess.errors = errorsCodes[error.code] ?? new Error('rss.invalid')
       })
   }
 
-  const onSubmittedForm = (e) => {
+  const onSubmittedForm = e => {
     e.preventDefault()
 
     const url = new FormData(e.target).get('url')
@@ -62,16 +62,16 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       })
   }
 
-  const postExist = (postId) => state.posts.some(post => post.id === postId)
+  const postExist = postId => state.posts.some(post => post.id === postId)
 
-  const readPost = (e) => {
+  const readPost = e => {
     const readPostId = e.target.dataset.id
     if (!postExist(readPostId)) return
     watchedState.openedPosts = [...watchedState.openedPosts, readPostId]
     watchedState.openedPostInModal = readPostId
   }
 
-  const getNewPosts = (posts) => {
+  const getNewPosts = posts => {
     const initialPostsIds = state.posts.map(({ id }) => id)
     const initialPostsIdsSet = new Set(initialPostsIds)
     return posts.filter(({ id }) => !initialPostsIdsSet.has(id))
@@ -144,7 +144,7 @@ export default () => {
     fallbackLng: initState.language,
   }).then(() => {
     app(selectors, initState, i18nextInstance, axiosInstance)
-  }).catch((error) => {
+  }).catch(error => {
     console.log(`Неизвестная ошибка: ${error.message}`)
   })
 }
