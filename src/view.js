@@ -97,7 +97,7 @@ const showFeeds = (div, state, i18nextInstance) => {
   })
 }
 
-const isViewedPosts = (postId, viewedPosts) => viewedPosts.find((post) => post.id === postId)
+const isViewedPosts = (postId, viewedPosts) => viewedPosts.find(post => post.id === postId)
 
 const setPost = (post, buttonName, state) => {
   const li = document.createElement('li')
@@ -149,7 +149,7 @@ const openModal = (postId, posts, modalDiv) => {
 }
 
 const showModalPost = (posts, selectors) => {
-  posts.forEach((postId) => {
+  posts.forEach(postId => {
     const openedPost = selectors.postsDiv.querySelector(`[data-id="${postId}"]`)
     openedPost.classList.remove('fw-bold')
     openedPost.classList.add('fw-normal', 'link-secondary')

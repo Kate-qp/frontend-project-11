@@ -10,7 +10,7 @@ const getPosts = (xmlDocument) => {
     return []
   }
 
-  return Array.from(postElements).map((postElement) => {
+  return Array.from(postElements).map(postElement => {
     const pubDate = postElement.querySelector('pubDate')
     const title = postElement.querySelector('title')
     const description = postElement.querySelector('description')

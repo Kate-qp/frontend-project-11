@@ -46,7 +46,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
     e.preventDefault()
 
     const url = new FormData(e.target).get('url')
-    const urls = state.feeds.map((feed) => feed.url)
+    const urls = state.feeds.map(feed => feed.url)
     validate(url, urls)
       .then(() => {
         watchedState.form.isValid = true
@@ -55,14 +55,14 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
         watchedState.sendingProcess.status = 'loading'
         getFeedRequest(url)
       })
-      .catch((error) => {
+      .catch(error => {
         watchedState.sendingProcess.status = 'failed'
         watchedState.form.error = error
         watchedState.form.isValid = false
       })
   }
 
-  const postExist = (postId) => state.posts.some((post) => post.id === postId)
+  const postExist = (postId) => state.posts.some(post => post.id === postId)
 
   const readPost = (e) => {
     const readPostId = e.target.dataset.id
@@ -80,14 +80,14 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const updatePosts = () => {
     const { feeds } = state
     const promises = feeds.map(({ url }) => axiosInstance.get(getRssData(url))
-      .then((response) => {
+      .then(response => {
         const parsedData = parseRss(response.data.contents)
         const newPosts = getNewPosts(parsedData.posts)
         if (newPosts.length > 0) {
           watchedState.posts.push(...newPosts)
         }
       })
-      .catch((error) => error))
+      .catch(error => error))
 
     Promise.all(promises)
       .finally(() => {
