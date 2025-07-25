@@ -1,6 +1,6 @@
 import onChange from 'on-change'
 
-const clearMessage = paragraph => {
+const clearMessage = (paragraph) => {
   const updatedParagraph = paragraph
   updatedParagraph.classList.remove('text-danger')
   updatedParagraph.classList.remove('text-success')
@@ -19,12 +19,12 @@ const showErrorMessage = (paragraph, error, i18nextInstance) => {
   paragraph.classList.add('text-danger')
 }
 
-const disableForm = rssForm => {
+const disableForm = (rssForm) => {
   rssForm.input.setAttribute('disabled', '')
   rssForm.btnSubmit.setAttribute('disabled', '')
 }
 
-const enableForm = rssForm => {
+const enableForm = (rssForm) => {
   rssForm.input.removeAttribute('disabled')
   rssForm.btnSubmit.removeAttribute('disabled')
 }
@@ -72,7 +72,7 @@ const createCardUl = (buttonName, entityType, i18nextInstance) => {
   return card
 }
 
-const clearDiv = div => {
+const clearDiv = (div) => {
   const updatedDiv = div
   updatedDiv.innerHTML = ''
 }

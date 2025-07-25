@@ -1,9 +1,9 @@
-const isValidXML = document => {
+const isValidXML = (document) => {
   const errorElement = document.querySelector('parsererror')
   return !errorElement
 }
 
-const getPosts = xmlDocument => {
+const getPosts = (xmlDocument) => {
   const postElements = xmlDocument.getElementsByTagName('item')
 
   if (!postElements.length) {
@@ -27,7 +27,7 @@ const getPosts = xmlDocument => {
   })
 }
 
-const getFeed = xmlDocument => {
+const getFeed = (xmlDocument) => {
   const title = xmlDocument.querySelector('title')
   const description = xmlDocument.querySelector('description')
 
@@ -37,7 +37,7 @@ const getFeed = xmlDocument => {
   }
 }
 
-export default xml => {
+export default (xml) => {
   const xmlDocument = new DOMParser().parseFromString(xml, 'text/xml')
 
   if (!isValidXML(xmlDocument)) {
