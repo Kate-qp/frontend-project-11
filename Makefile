@@ -1,11 +1,11 @@
 develop:
-	npx webpack serve
+	npx webpack serve --config webpack.config.js
 
 install:
 	npm ci
 
 build:
-	NODE_ENV=production npx webpack
+	set NODE_ENV=production && npx webpack --config webpack.config.js
 
 test:
 	npm test
