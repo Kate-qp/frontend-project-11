@@ -1,4 +1,4 @@
-{
+﻿{
     "name": "@hexlet/code",
     "version": "1.0.0",
     "description": "RSS Reader",
@@ -10,7 +10,8 @@
         "lint:fix": "eslint --fix .",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "build": "webpack --mode production"
     },
     "eslintConfig": {
         "extends": [
