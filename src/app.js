@@ -9,7 +9,7 @@ const language = 'ru'
 const allOriginsProxyUrl = 'https://allorigins.hexlet.app/get'
 const errorsCodes = {
   ERR_NETWORK: new Error('network_error'),
-  ECONNABORTED: new Error('request_timed_out'),
+  ECONNABORTED: new Error('request_timed_out')
 }
 const defaultTimeout = 5000
 
@@ -25,7 +25,8 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const watchedState = watch(state, selectors, i18nextInstance)
 
   const getFeedRequest = url => {
-    axiosInstance.get(getRssData(url))
+    axiosInstance
+      .get(getRssData(url))
       .then(({ data }) => {
         const { feed, posts } = parseRss(data.contents)
         watchedState.feeds = [...watchedState.feeds, { url, ...feed }]
@@ -79,20 +80,22 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
 
   const updatePosts = () => {
     const { feeds } = state
-    const promises = feeds.map(({ url }) => axiosInstance.get(getRssData(url))
-      .then(response => {
-        const parsedData = parseRss(response.data.contents)
-        const newPosts = getNewPosts(parsedData.posts)
-        if (newPosts.length > 0) {
-          watchedState.posts.push(...newPosts)
-        }
-      })
-      .catch(error => error))
+    const promises = feeds.map(({ url }) =>
+      axiosInstance
+        .get(getRssData(url))
+        .then(response => {
+          const parsedData = parseRss(response.data.contents)
+          const newPosts = getNewPosts(parsedData.posts)
+          if (newPosts.length > 0) {
+            watchedState.posts.push(...newPosts)
+          }
+        })
+        .catch(error => error)
+    )
 
-    Promise.all(promises)
-      .finally(() => {
-        setTimeout(updatePosts, defaultTimeout)
-      })
+    Promise.all(promises).finally(() => {
+      setTimeout(updatePosts, defaultTimeout)
+    })
   }
 
   if (selectors.postsDiv) {
@@ -109,42 +112,45 @@ export default () => {
     form: {
       objectForm: document.querySelector('.rss-form'),
       input: document.querySelector('#url-input'),
-      btnSubmit: document.querySelector('button[type="submit"]'),
+      btnSubmit: document.querySelector('button[type="submit"]')
     },
     feedback: document.querySelector('.feedback'),
     feedsDiv: document.querySelector('.feeds'),
     postsDiv: document.querySelector('.posts'),
-    modal: document.querySelector('#modal'),
+    modal: document.querySelector('#modal')
   }
 
   const initState = {
     form: {
       isValid: true,
-      error: null,
+      error: null
     },
     sendingProcess: {
       status: 'wait',
-      errors: null,
+      errors: null
     },
     feeds: [],
     posts: [],
     openedPosts: [],
     openedPostInModal: null,
-    language,
+    language
   }
 
   const i18nextInstance = i18next.createInstance()
   const axiosInstance = axios.create({
-    timeout: 10000,
+    timeout: 10000
   })
 
-  i18nextInstance.init({
-    debug: false,
-    resources,
-    fallbackLng: initState.language,
-  }).then(() => {
-    app(selectors, initState, i18nextInstance, axiosInstance)
-  }).catch(error => {
-    console.log(`Неизвестная ошибка: ${error.message}`)
-  })
+  i18nextInstance
+    .init({
+      debug: false,
+      resources,
+      fallbackLng: initState.language
+    })
+    .then(() => {
+      app(selectors, initState, i18nextInstance, axiosInstance)
+    })
+    .catch(error => {
+      console.log(`Неизвестная ошибка: ${error.message}`)
+    })
 }

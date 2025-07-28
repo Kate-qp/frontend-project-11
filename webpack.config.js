@@ -14,7 +14,7 @@ const config = {
     path: path.resolve(__dirname, 'dist'),
     filename: isProduction ? '[name].[contenthash].js' : '[name].js',
     clean: true,
-    assetModuleFilename: 'assets/[hash][ext][query]',
+    assetModuleFilename: 'assets/[hash][ext][query]'
   },
   devServer: {
     open: true,
@@ -23,28 +23,25 @@ const config = {
     client: {
       overlay: {
         errors: true,
-        warnings: false,
-      },
+        warnings: false
+      }
     },
     static: {
-      directory: path.join(__dirname, 'public'),
-    },
+      directory: path.join(__dirname, 'public')
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: 'index.html',
-      minify: isProduction,
+      minify: isProduction
     }),
     new MiniCssExtractPlugin({
-      filename: isProduction ? '[name].[contenthash].css' : '[name].css',
-    }),
+      filename: isProduction ? '[name].[contenthash].css' : '[name].css'
+    })
   ],
   optimization: {
     minimize: isProduction,
-    minimizer: [
-      '...',
-      new CssMinimizerPlugin(),
-    ],
+    minimizer: ['...', new CssMinimizerPlugin()],
     splitChunks: {
       chunks: 'all',
       minSize: 20000,
@@ -53,11 +50,11 @@ const config = {
         vendor: {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
-          chunks: 'all',
-        },
-      },
+          chunks: 'all'
+        }
+      }
     },
-    runtimeChunk: 'single',
+    runtimeChunk: 'single'
   },
   module: {
     rules: [
@@ -65,16 +62,16 @@ const config = {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
         type: 'asset/resource',
         generator: {
-          filename: 'assets/[hash][ext][query]',
-        },
+          filename: 'assets/[hash][ext][query]'
+        }
       },
       {
         test: /\.css$/i,
         use: [
           isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
           'css-loader',
-          'postcss-loader',
-        ],
+          'postcss-loader'
+        ]
       },
       {
         test: /\.s[ac]ss$/i,
@@ -85,11 +82,11 @@ const config = {
             loader: 'sass-loader',
             options: {
               sassOptions: {
-                quietDeps: true,
-              },
-            },
-          },
-        ],
+                quietDeps: true
+              }
+            }
+          }
+        ]
       },
       {
         test: /\.js$/,
@@ -97,30 +94,29 @@ const config = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env'],
-          },
-        },
-      },
-    ],
+            presets: ['@babel/preset-env']
+          }
+        }
+      }
+    ]
   },
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      '@': path.resolve(__dirname, 'src'),
-    },
+      '@': path.resolve(__dirname, 'src')
+    }
   },
   performance: {
     hints: isProduction ? 'warning' : false,
     maxAssetSize: 244 * 1024, // 244 KiB
-    maxEntrypointSize: 244 * 1024, // 244 KiB
-  },
+    maxEntrypointSize: 244 * 1024 // 244 KiB
+  }
 }
 
 module.exports = () => {
   if (isProduction) {
     config.mode = 'production'
-  }
-  else {
+  } else {
     config.mode = 'development'
     config.devtool = 'eval-source-map'
   }
