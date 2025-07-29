@@ -1,102 +1,92 @@
 {
-    "name": "@hexlet/code",
-    "version": "1.0.0",
-    "description": "RSS Reader",
-    "main": "index.js",
-    "engines": {
-        "node": ">=14.0.0"
-    },
-    "scripts": {
-        "lint:fix": "eslint --fix .",
-        "format": "prettier --write .",
-        "format:check": "prettier --check .",
-        "lint": "eslint .",
-        "build": "webpack --mode production"
-    },
-    "eslintConfig": {
-        "extends": [
-            "airbnb-base",
-            "plugin:jest/recommended"
-        ],
-        "rules": {
-            "semi": [
-                "error",
-                "never"
-            ],
-            "quotes": [
-                "error",
-                "single"
-            ],
-            "indent": [
-                "error",
-                2
-            ],
-            "import/no-extraneous-dependencies": [
-                "error",
-                {
-                    "devDependencies": true,
-                    "optionalDependencies": false
-                }
-            ],
-            "no-console": "off",
-            "linebreak-style": [
-                "error",
-                "unix"
-            ]
-        },
-        "env": {
-            "browser": true,
-            "jest": true,
-            "es2021": true
-        },
-        "parserOptions": {
-            "ecmaVersion": "latest",
-            "sourceType": "module"
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "RSS Reader",
+  "main": "index.js",
+  "type": "module",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "prebuild": "rimraf dist",
+    "build": "webpack --mode production",
+    "format": "prettier --write ."
+  },
+  "eslintConfig": {
+    "extends": [
+      "airbnb-base",
+      "plugin:jest/recommended"
+    ],
+    "rules": {
+      "semi": ["error", "never"],
+      "quotes": ["error", "single"],
+      "indent": ["error", 2],
+      "import/no-extraneous-dependencies": [
+        "error",
+        {
+          "devDependencies": true,
+          "optionalDependencies": false
         }
+      ],
+      "no-console": "off",
+      "linebreak-style": ["error", "unix"]
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Kate-qp/frontend-project-11"
+    "env": {
+      "browser": true,
+      "jest": true,
+      "es2021": true
     },
-    "author": "",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/Kate-qp/frontend-project-11/issues"
-    },
-    "homepage": "https://github.com/Kate-qp/frontend-project-11#readme",
-    "devDependencies": {
-        "@babel/core": "^7.24.0",
-        "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-        "@babel/preset-env": "^7.24.0",
-        "@eslint/eslintrc": "^3.3.1",
-        "@eslint/js": "^9.32.0",
-        "@stylistic/eslint-plugin": "^5.2.2",
-        "babel-loader": "^10.0.0",
-        "css-loader": "^7.1.2",
-        "css-minimizer-webpack-plugin": "^7.0.2",
-        "eslint": "^9.32.0",
-        "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-prettier": "^5.5.3",
-        "globals": "^16.3.0",
-        "html-webpack-plugin": "^5.6.0",
-        "install": "^0.13.0",
-        "jest": "^30.0.5",
-        "mini-css-extract-plugin": "^2.9.2",
-        "postcss-loader": "^8.1.1",
-        "prettier": "^3.6.2",
-        "sass": "^1.89.2",
-        "sass-loader": "^16.0.5",
-        "style-loader": "^4.0.0",
-        "webpack": "^5.90.3",
-        "webpack-bundle-analyzer": "^4.10.2",
-        "webpack-cli": "^6.0.1",
-        "webpack-dev-server": "^5.2.2"
-    },
-    "dependencies": {
-        "axios": "^1.7.2",
-        "bootstrap": "5.3.7",
-        "i18next": "^25.3.2",
-        "on-change": "^5.0.1",
-        "yup": "^1.4.0"
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kate-qp/frontend-project-11"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kate-qp/frontend-project-11/issues"
+  },
+  "homepage": "https://github.com/Kate-qp/frontend-project-11#readme",
+  "devDependencies": {
+    "@babel/core": "^7.24.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/preset-env": "^7.24.0",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.32.0",
+    "@stylistic/eslint-plugin": "^5.2.2",
+    "babel-loader": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.2",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "globals": "^16.3.0",
+    "html-webpack-plugin": "^5.6.0",
+    "install": "^0.13.0",
+    "jest": "^30.0.5",
+    "mini-css-extract-plugin": "^2.9.2",
+    "postcss-loader": "^8.1.1",
+    "prettier": "^3.6.2",
+    "sass": "^1.89.2",
+    "sass-loader": "^16.0.5",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.90.3",
+    "webpack-bundle-analyzer": "^4.10.2",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2",
+    "rimraf": "^5.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "bootstrap": "5.3.7",
+    "i18next": "^25.3.2",
+    "on-change": "^5.0.1",
+    "yup": "^1.4.0"
+  }
 }

@@ -1,6 +1,7 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 const path = require('path')
 const process = require('process')
+const __dirname = path.dirname(__dirname)
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
@@ -115,8 +116,7 @@ const config = {
 module.exports = () => {
   if (isProduction) {
     config.mode = 'production'
-  }
-  else {
+  } else {
     config.mode = 'development'
     config.devtool = 'eval-source-map'
   }
