@@ -1,124 +1,117 @@
-// Generated using webpack-cli https://github.com/webpack/webpack-cli
 const path = require('path')
-const process = require('process')
-const __dirname = path.dirname(__dirname)
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 
-const isProduction = process.env.NODE_ENV === 'production'
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production'
+  const __dirname = path.resolve()
 
-const config = {
-  entry: './src/index.js',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: isProduction ? '[name].[contenthash].js' : '[name].js',
-    clean: true,
-    assetModuleFilename: 'assets/[hash][ext][query]'
-  },
-  devServer: {
-    open: true,
-    host: 'localhost',
-    hot: true,
-    client: {
-      overlay: {
-        errors: true,
-        warnings: false
-      }
+  const config = {
+    entry: './src/index.js',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: isProduction ? '[name].[contenthash].js' : '[name].js',
+      clean: true,
+      assetModuleFilename: 'assets/[hash][ext][query]'
     },
-    static: {
-      directory: path.join(__dirname, 'public')
-    }
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: 'index.html',
-      minify: isProduction
-    }),
-    new MiniCssExtractPlugin({
-      filename: isProduction ? '[name].[contenthash].css' : '[name].css'
-    })
-  ],
-  optimization: {
-    minimize: isProduction,
-    minimizer: ['...', new CssMinimizerPlugin()],
-    splitChunks: {
-      chunks: 'all',
-      minSize: 20000,
-      maxSize: 244 * 1024, // 244 KiB
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all'
-        }
-      }
-    },
-    runtimeChunk: 'single'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-        type: 'asset/resource',
-        generator: {
-          filename: 'assets/[hash][ext][query]'
+    devServer: {
+      open: true,
+      host: 'localhost',
+      hot: true,
+      client: {
+        overlay: {
+          errors: true,
+          warnings: false
         }
       },
-      {
-        test: /\.css$/i,
-        use: [
-          isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
-          'css-loader',
-          'postcss-loader'
-        ]
-      },
-      {
-        test: /\.s[ac]ss$/i,
-        use: [
-          isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
-          'css-loader',
-          {
-            loader: 'sass-loader',
-            options: {
-              sassOptions: {
-                quietDeps: true
+      static: {
+        directory: path.join(__dirname, 'public')
+      }
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: 'index.html',
+        minify: isProduction
+      }),
+      new MiniCssExtractPlugin({
+        filename: isProduction ? '[name].[contenthash].css' : '[name].css'
+      })
+    ],
+    module: {
+      rules: [
+        {
+          test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
+          type: 'asset/resource'
+        },
+        {
+          test: /\.css$/i,
+          use: [
+            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader',
+            'postcss-loader'
+          ]
+        },
+        {
+          test: /\.s[ac]ss$/i,
+          use: [
+            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader',
+            {
+              loader: 'sass-loader',
+              options: {
+                sassOptions: {
+                  quietDeps: true
+                }
               }
             }
-          }
-        ]
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
+          ]
+        },
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader'
           }
         }
+      ]
+    },
+    resolve: {
+      extensions: ['.js'],
+      alias: {
+        '@': path.resolve(__dirname, 'src')
       }
-    ]
-  },
-  resolve: {
-    extensions: ['.js', '.jsx'],
-    alias: {
-      '@': path.resolve(__dirname, 'src')
     }
-  },
-  performance: {
-    hints: isProduction ? 'warning' : false,
-    maxAssetSize: 244 * 1024, // 244 KiB
-    maxEntrypointSize: 244 * 1024 // 244 KiB
   }
-}
 
-module.exports = () => {
   if (isProduction) {
     config.mode = 'production'
-  } else {
+    config.optimization = {
+      minimize: true,
+      minimizer: ['...', new CssMinimizerPlugin()],
+      splitChunks: {
+        chunks: 'all',
+        minSize: 20000,
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all'
+          }
+        }
+      },
+      runtimeChunk: 'single'
+    }
+    config.performance = {
+      hints: 'warning',
+      maxAssetSize: 244 * 1024,
+      maxEntrypointSize: 244 * 1024
+    }
+  }
+  else {
     config.mode = 'development'
     config.devtool = 'eval-source-map'
   }
+
   return config
 }
