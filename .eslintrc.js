@@ -5,11 +5,7 @@ import globals from 'globals'
 export default [
   js.configs.recommended,
   {
-    ignores: [
-      '**/dist/**',
-      '**/node_modules/**',
-      '**/*.min.js'
-    ]
+    ignores: ['**/dist/**', '**/node_modules/**', '**/*.min.js']
   },
   {
     files: ['**/*.js'],
@@ -35,10 +31,13 @@ export default [
       '@stylistic/object-curly-spacing': ['error', 'always'],
       '@stylistic/comma-spacing': 'error',
       '@stylistic/comma-dangle': ['error', 'never'],
-      'no-unused-vars': ['error', { 
-        varsIgnorePattern: '^__webpack|^__unused',
-        args: 'none' 
-      }],
+      'no-unused-vars': [
+        'error',
+        {
+          varsIgnorePattern: '^__webpack|^__unused',
+          args: 'none'
+        }
+      ],
       'no-redeclare': 'off'
     }
   }
