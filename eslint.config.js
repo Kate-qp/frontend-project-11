@@ -21,19 +21,17 @@ export default [
       prettier: prettierPlugin
     },
     rules: {
-      '@stylistic/comma-dangle': ['error', 'always-multiline'],
-      '@stylistic/arrow-parens': ['error', 'always'],
-      '@stylistic/brace-style': ['error', '1tbs'],
-      '@stylistic/semi': ['error', 'never'],
-      '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
-      '@stylistic/indent': ['error', 2],
+      '@stylistic/comma-dangle': 'off',
+      '@stylistic/arrow-parens': 'off',
+      '@stylistic/semi': 'off',
       'prettier/prettier': [
         'error',
         {
           printWidth: 100,
           singleQuote: true,
-          trailingComma: 'none',
-          arrowParens: 'avoid'
+          trailingComma: 'all',
+          arrowParens: 'always',
+          semi: false
         }
       ]
     }

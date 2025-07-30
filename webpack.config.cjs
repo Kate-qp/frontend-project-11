@@ -107,8 +107,7 @@ module.exports = (env, argv) => {
       maxAssetSize: 244 * 1024,
       maxEntrypointSize: 244 * 1024
     }
-  }
-  else {
+  } else {
     config.mode = 'development'
     config.devtool = 'eval-source-map'
   }

@@ -20,9 +20,18 @@
       "plugin:jest/recommended"
     ],
     "rules": {
-      "semi": ["error", "never"],
-      "quotes": ["error", "single"],
-      "indent": ["error", 2],
+      "semi": [
+        "error",
+        "never"
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "indent": [
+        "error",
+        2
+      ],
       "import/no-extraneous-dependencies": [
         "error",
         {
@@ -31,7 +40,10 @@
         }
       ],
       "no-console": "off",
-      "linebreak-style": ["error", "unix"]
+      "linebreak-style": [
+        "error",
+        "unix"
+      ]
     },
     "env": {
       "browser": true,
