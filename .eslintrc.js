@@ -5,7 +5,7 @@ import globals from 'globals'
 export default [
   js.configs.recommended,
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/*.min.js']
+    ignores: ['**/dist/**', '**/node_modules/**', '**/*.min.js'],
   },
   {
     files: ['**/*.js'],
@@ -14,11 +14,11 @@ export default [
       sourceType: 'module',
       globals: {
         ...globals.browser,
-        ...globals.node
-      }
+        ...globals.node,
+      },
     },
     plugins: {
-      '@stylistic': stylistic
+      '@stylistic': stylistic,
     },
     rules: {
       '@stylistic/semi': ['error', 'never'],
@@ -35,10 +35,10 @@ export default [
         'error',
         {
           varsIgnorePattern: '^__webpack|^__unused',
-          args: 'none'
-        }
+          args: 'none',
+        },
       ],
-      'no-redeclare': 'off'
-    }
-  }
+      'no-redeclare': 'off',
+    },
+  },
 ]

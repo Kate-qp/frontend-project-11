@@ -13,12 +13,12 @@ export default [
       sourceType: 'module',
       globals: {
         ...globals.browser,
-        ...globals.node
-      }
+        ...globals.node,
+      },
     },
     plugins: {
       '@stylistic': stylistic,
-      prettier: prettierPlugin
+      prettier: prettierPlugin,
     },
     rules: {
       '@stylistic/comma-dangle': 'off',
@@ -31,14 +31,14 @@ export default [
           singleQuote: true,
           trailingComma: 'all',
           arrowParens: 'always',
-          semi: false
-        }
-      ]
-    }
+          semi: false,
+        },
+      ],
+    },
   },
   js.configs.recommended,
   prettierConfig,
   {
-    ignores: ['node_modules/**', '*.min.js']
-  }
+    ignores: ['node_modules/**', '*.min.js'],
+  },
 ]
