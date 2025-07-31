@@ -12,7 +12,12 @@
     "lint:fix": "eslint --fix .",
     "prebuild": "rimraf dist",
     "build": "webpack --mode production",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "preinstall": "echo Installing dependencies..."
+  },
+  "resolutions": {
+    "glob": "10.4.5",
+    "inflight": "1.0.6"
   },
   "eslintConfig": {
     "extends": [
@@ -55,6 +60,15 @@
       "sourceType": "module"
     }
   },
+  "jest": {
+    "testMatch": [
+      "**/__tests__/**/*.test.js",
+      "**/?(*.)+(spec|test).js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Kate-qp/frontend-project-11"
@@ -73,26 +87,30 @@
     "@eslint/js": "^9.32.0",
     "@stylistic/eslint-plugin": "^5.2.2",
     "babel-loader": "^10.0.0",
+    "babel-plugin-istanbul": "^7.0.0",
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.2",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
+    "glob": "^11.0.3",
     "globals": "^16.3.0",
     "html-webpack-plugin": "^5.6.0",
+    "inflight": "^1.0.6",
     "install": "^0.13.0",
     "jest": "^30.0.5",
     "mini-css-extract-plugin": "^2.9.2",
+    "npm-force-resolutions": "^0.0.10",
     "postcss-loader": "^8.1.1",
     "prettier": "^3.6.2",
+    "rimraf": "^5.0.0",
     "sass": "^1.89.2",
     "sass-loader": "^16.0.5",
     "style-loader": "^4.0.0",
     "webpack": "^5.90.3",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.2",
-    "rimraf": "^5.0.0"
+    "webpack-dev-server": "^5.2.2"
   },
   "dependencies": {
     "axios": "^1.7.2",
