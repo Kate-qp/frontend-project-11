@@ -23,8 +23,9 @@ export default [
       prettier: prettierPlugin
     },
     rules: {
-      '@stylistic/comma-dangle': ['error', 'always-multiline'],
-      '@stylistic/arrow-parens': ['error', 'always'],
+      'no-undef': ['error', { typeof: true }],
+      '@stylistic/arrow-parens': 'off',
+      '@stylistic/comma-dangle': 'off',
       '@stylistic/brace-style': ['error', '1tbs'],
       '@stylistic/semi': ['error', 'never'],
       '@stylistic/quotes': ['error', 'single'],

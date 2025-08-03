@@ -115,8 +115,7 @@ const config = {
 module.exports = () => {
   if (isProduction) {
     config.mode = 'production'
-  }
-  else {
+  } else {
     config.mode = 'development'
     config.devtool = 'eval-source-map'
   }
