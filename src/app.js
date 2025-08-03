@@ -1,30 +1,8 @@
-import i18next from 'i18next'
-import axios from 'axios'
-import watch from './view.js'
-import validate from './validator.js'
-import parseRss from './rssParser.js'
-import resources from './lang/langs.js'
-
-const language = 'ru'
-const allOriginsProxyUrl = 'https://allorigins.hexlet.app/get'
-const errorsCodes = {
-  ERR_NETWORK: new Error('network_error'),
-  ECONNABORTED: new Error('request_timed_out'),
-}
-const defaultTimeout = 5000
-
-const getRssData = (url) => {
-  const objectUrl = new URL(allOriginsProxyUrl)
-  objectUrl.searchParams.set('disableCache', 'true')
-  objectUrl.searchParams.set('url', url)
-  return objectUrl.href
-}
-
 const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const state = { ...initState }
   const watchedState = watch(state, selectors, i18nextInstance)
 
-  const getFeedRequest = (url) => {
+  const getFeedRequest = url => {
     axiosInstance
       .get(getRssData(url))
       .then(({ data }) => {
@@ -37,7 +15,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
 
         selectors.form.input.classList.remove('is-invalid')
       })
-      .catch((error) => {
+      .catch(error => {
         watchedState.sendingProcess.status = 'failed'
         watchedState.sendingProcess.errors = errorsCodes[error.code] ?? new Error('rss.invalid')
       })
@@ -150,7 +128,7 @@ export default () => {
     .then(() => {
       app(selectors, initState, i18nextInstance, axiosInstance)
     })
-    .catch((error) => {
+    .catch(error => {
       console.log(`Неизвестная ошибка: ${error.message}`)
     })
 }

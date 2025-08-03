@@ -1,6 +1,6 @@
 import onChange from 'on-change'
 
-const clearMessage = (paragraph) => {
+const clearMessage = paragraph => {
   const updatedParagraph = paragraph
   updatedParagraph.classList.remove('text-danger')
   updatedParagraph.classList.remove('text-success')
@@ -156,7 +156,7 @@ const showModalPost = (posts, selectors) => {
   })
 }
 
-export default (state, selectors, i18nextInstance) => (
+export default (state, selectors, i18nextInstance) =>
   onChange(state, (path, value) => {
     switch (path) {
       case 'form.isValid':

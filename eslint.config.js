@@ -1,5 +1,4 @@
-﻿// eslint.config.js
-import js from '@eslint/js'
+﻿import js from '@eslint/js'
 import stylistic from '@stylistic/eslint-plugin'
 import globals from 'globals'
 import prettierPlugin from 'eslint-plugin-prettier'
@@ -24,8 +23,8 @@ export default [
     },
     rules: {
       'no-undef': ['error', { typeof: true }],
-      '@stylistic/arrow-parens': 'off',
-      '@stylistic/comma-dangle': 'off',
+      '@stylistic/arrow-parens': ['error', 'as-needed'],
+      '@stylistic/comma-dangle': ['error', 'always-multiline'],
       '@stylistic/brace-style': ['error', '1tbs'],
       '@stylistic/semi': ['error', 'never'],
       '@stylistic/quotes': ['error', 'single'],

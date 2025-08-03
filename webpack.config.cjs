@@ -1,6 +1,4 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
-const path = require('path')
-const process = require('process')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
@@ -13,7 +11,7 @@ const config = {
     path: path.resolve(__dirname, 'dist'),
     filename: isProduction ? '[name].[contenthash].js' : '[name].js',
     clean: true,
-    assetModuleFilename: 'assets/[hash][ext][query]'
+    assetModuleFilename: 'assets/[hash][ext][query]',
   },
   devServer: {
     open: true,
