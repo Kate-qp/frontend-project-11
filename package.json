@@ -1,4 +1,4 @@
-{
+﻿{
     "name": "@hexlet/code",
     "version": "1.0.0",
     "description": "RSS Reader",
@@ -97,7 +97,9 @@
         "bootstrap": "5.3.7",
         "i18next": "^25.3.2",
         "on-change": "^5.0.1",
-        "yup": "^1.4.0"
+        "yup": "^1.4.0",
+        "glob": "^9.0.0",
+        "lru-cache": "^7.14.1"
     },
     "type": "module"
 }
