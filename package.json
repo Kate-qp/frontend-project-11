@@ -78,7 +78,7 @@
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-prettier": "^5.5.3",
         "globals": "^16.3.0",
-        "html-webpack-plugin": "^5.6.0",
+        "html-webpack-plugin": "^5.6.3",
         "install": "^0.13.0",
         "jest": "^30.0.5",
         "mini-css-extract-plugin": "^2.9.2",
@@ -87,7 +87,7 @@
         "sass": "^1.89.2",
         "sass-loader": "^16.0.5",
         "style-loader": "^4.0.0",
-        "webpack": "^5.90.3",
+        "webpack": "^5.101.0",
         "webpack-bundle-analyzer": "^4.10.2",
         "webpack-cli": "^6.0.1",
         "webpack-dev-server": "^5.2.2"
@@ -95,15 +95,15 @@
     "dependencies": {
         "axios": "^1.7.2",
         "bootstrap": "5.3.7",
+        "glob": "^9.0.0",
         "i18next": "^25.3.2",
+        "inflight": "^1.0.6",
+        "inherits": "^2.0.4",
         "on-change": "^5.0.1",
-        "yup": "^1.4.0",
         "path": "^0.12.7",
         "process": "^0.11.10",
         "util": "^0.12.5",
-        "inherits": "^2.0.4",
-        "glob": "^9.0.0",
-        "inflight": "^1.0.6"
+        "yup": "^1.4.0"
     },
     "type": "module"
 }

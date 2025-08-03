@@ -3,7 +3,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const path = require('path')
-const __dirname = path.resolve()
 const isProduction = process.env.NODE_ENV === 'production'
 
 const config = {
