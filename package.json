@@ -103,7 +103,7 @@
         "util": "^0.12.5",
         "inherits": "^2.0.4",
         "glob": "^9.0.0",
-        "inflight": "^2.0.0"
+        "inflight": "^1.0.6"
     },
     "type": "module"
 }
