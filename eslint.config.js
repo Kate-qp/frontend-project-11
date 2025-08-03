@@ -13,14 +13,14 @@ export default [
       sourceType: 'module',
       globals: {
         ...globals.browser,
-        ...globals.node
-      }
-    }
+        ...globals.node,
+      },
+    },
   },
   {
     plugins: {
       '@stylistic': stylistic,
-      prettier: prettierPlugin
+      'prettier': prettierPlugin,
     },
     rules: {
       'no-undef': ['error', { typeof: true }],
@@ -36,13 +36,13 @@ export default [
           printWidth: 100,
           singleQuote: true,
           trailingComma: 'none',
-          arrowParens: 'avoid'
-        }
-      ]
-    }
+          arrowParens: 'avoid',
+        },
+      ],
+    },
   },
   prettierConfig,
   {
-    ignores: ['node_modules/**', 'dist/**', '*.min.js']
-  }
+    ignores: ['node_modules/**', 'dist/**', '*.min.js'],
+  },
 ]
