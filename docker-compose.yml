@@ -1,5 +1,6 @@
 services:
   app:
-    image: your-image
-    ports:
-      - "3000:3000"
+    build: .
+    volumes:
+      - .:/project
+      
