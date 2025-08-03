@@ -2,15 +2,15 @@ import * as yup from 'yup'
 
 yup.setLocale({
   string: {
-    url: 'url.invalid',
+    url: 'errors.invalid'
   },
   mixed: {
-    required: 'url.required',
-    notOneOf: 'url.exists',
-  },
+    required: 'errors.required',
+    notOneOf: 'errors.exists'
+  }
 })
 
-export default (newUrl, urls) => {
-  const schema = yup.string().trim().required().url().notOneOf(urls)
-  return schema.validate(newUrl, { abortEarly: true })
+export default (url, feeds) => {
+  const schema = yup.string().required().url().notOneOf(feeds)
+  return schema.validate(url)
 }
