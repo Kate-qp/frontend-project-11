@@ -1,6 +1,6 @@
 import onChange from 'on-change'
 
-const clearMessage = paragraph => {
+const clearMessage = (paragraph) => {
   const updatedParagraph = paragraph
   updatedParagraph.classList.remove('text-danger')
   updatedParagraph.classList.remove('text-success')
@@ -97,7 +97,7 @@ const showFeeds = (div, state, i18nextInstance) => {
   })
 }
 
-const isViewedPosts = (postId, viewedPosts) => viewedPosts.some((post) => post.id === postId)
+const isViewedPosts = (postId, viewedPosts) => viewedPosts.find((post) => post.id === postId)
 
 const setPost = (post, buttonName, state) => {
   const li = document.createElement('li')
@@ -107,7 +107,7 @@ const setPost = (post, buttonName, state) => {
     'justify-content-between',
     'align-items-start',
     'border-0',
-    'border-end-0'
+    'border-end-0',
   )
   const linkTag = document.createElement('a')
   const fontClass = !isViewedPosts(post.id, state.openedPosts) ? 'fw-bold' : 'fw-normal'
@@ -156,39 +156,37 @@ const showModalPost = (posts, selectors) => {
   })
 }
 
-export default (state, selectors, i18nextInstance) =>
-  onChange(state, (path, value) => {
-    switch (path) {
-      case 'form.isValid':
-        selectors.form.input.classList.toggle('is-invalid', !value)
-        selectors.form.input.focus()
-        break
-      case 'sendingProcess.status':
-        handleProcess(selectors, state.sendingProcess.status, i18nextInstance)
-        break
-      case 'sendingProcess.errors':
-        showErrorMessage(selectors.feedback, state.sendingProcess.errors, i18nextInstance)
-        break
-      case 'form.error':
-        showErrorMessage(selectors.feedback, value, i18nextInstance)
-        break
-      case 'loading':
-        disableForm(selectors.form)
-        break
-      case 'feeds':
-        showFeeds(selectors.feedsDiv, state, i18nextInstance)
-        break
-      case 'posts':
-        showPosts(selectors.postsDiv, state, i18nextInstance)
-        break
-      case 'openedPosts':
-        showModalPost(value, selectors)
-        break
-      case 'openedPostInModal':
-        openModal(value, state.posts, selectors.modal)
-        break
-      default:
-        throw new Error(`Unknown 'path': ${path}`)
-    }
-  })
-)
+export default (state, selectors, i18nextInstance) => onChange(state, (path, value) => {
+  switch (path) {
+    case 'form.isValid':
+      selectors.form.input.classList.toggle('is-invalid', !value)
+      selectors.form.input.focus()
+      break
+    case 'sendingProcess.status':
+      handleProcess(selectors, state.sendingProcess.status, i18nextInstance)
+      break
+    case 'sendingProcess.errors':
+      showErrorMessage(selectors.feedback, state.sendingProcess.errors, i18nextInstance)
+      break
+    case 'form.error':
+      showErrorMessage(selectors.feedback, value, i18nextInstance)
+      break
+    case 'loading':
+      disableForm()
+      break
+    case 'feeds':
+      showFeeds(selectors.feedsDiv, state, i18nextInstance)
+      break
+    case 'posts':
+      showPosts(selectors.postsDiv, state, i18nextInstance)
+      break
+    case 'openedPosts':
+      showModalPost(value, selectors)
+      break
+    case 'openedPostInModal':
+      openModal(value, state.posts, selectors.modal)
+      break
+    default:
+      throw new Error(`Unknown 'path': ${path}`)
+  }
+})
