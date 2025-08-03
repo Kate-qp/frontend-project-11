@@ -1,9 +1,8 @@
-// Generated using webpack-cli https://github.com/webpack/webpack-cli
+/* eslint-env node */
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const path = require('path')
-/* eslint-env node */
 const isProduction = process.env.NODE_ENV === 'production'
 
 const config = {
@@ -43,7 +42,7 @@ const config = {
     splitChunks: {
       chunks: 'all',
       minSize: 20000,
-      maxSize: 244 * 1024, // 244 KiB
+      maxSize: 244 * 1024,
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/]/,
@@ -106,8 +105,8 @@ const config = {
   },
   performance: {
     hints: isProduction ? 'warning' : false,
-    maxAssetSize: 244 * 1024, // 244 KiB
-    maxEntrypointSize: 244 * 1024, // 244 KiB
+    maxAssetSize: 244 * 1024,
+    maxEntrypointSize: 244 * 1024,
   },
 }
 
