@@ -1,0 +1,11 @@
+FROM mcr.microsoft.com/playwright:v1.52.0-jammy
+
+WORKDIR /project
+
+RUN apt-get update && \
+    apt-get install -y bash make
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
