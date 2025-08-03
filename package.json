@@ -1,8 +1,8 @@
-{
+﻿{
     "name": "@hexlet/code",
     "version": "1.0.0",
     "description": "RSS Reader",
-    "main": "index.js",
+    "main": "app.js",
     "engines": {
         "node": ">=14.0.0"
     },
@@ -11,7 +11,10 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "lint": "eslint .",
-        "build": "webpack --mode production"
+        "build": "webpack --mode production",
+        "test": "playwright test",
+        "test:debug": "playwright test --debug",
+        "test:headed": "playwright test --headed"
     },
     "eslintConfig": {
         "extends": [
@@ -70,6 +73,7 @@
         "@babel/preset-env": "^7.24.0",
         "@eslint/eslintrc": "^3.3.1",
         "@eslint/js": "^9.32.0",
+        "@playwright/test": "^1.54.2",
         "@stylistic/eslint-plugin": "^5.2.2",
         "babel-loader": "^10.0.0",
         "css-loader": "^7.1.2",
