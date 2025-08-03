@@ -13,7 +13,7 @@ const errorsCodes = {
 }
 const defaultTimeout = 5000
 
-const getRssData = (url) => {
+const getRssData = url => {
   const objectUrl = new URL(allOriginsProxyUrl)
   objectUrl.searchParams.set('disableCache', 'true')
   objectUrl.searchParams.set('url', url)
@@ -24,7 +24,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const state = { ...initState }
   const watchedState = watch(state, selectors, i18nextInstance)
 
-  const getFeedRequest = (url) => {
+  const getFeedRequest = url => {
     axiosInstance.get(getRssData(url))
       .then(({ data }) => {
         const { feed, posts } = parseRss(data.contents)
@@ -36,17 +36,17 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
 
         selectors.form.input.classList.remove('is-invalid')
       })
-      .catch((error) => {
+      .catch(error => {
         watchedState.sendingProcess.status = 'failed'
         watchedState.sendingProcess.errors = errorsCodes[error.code] ?? new Error('rss.invalid')
       })
   }
 
-  const onSubmittedForm = (e) => {
+  const onSubmittedForm = e => {
     e.preventDefault()
 
     const url = new FormData(e.target).get('url')
-    const urls = state.feeds.map((feed) => feed.url)
+    const urls = state.feeds.map(feed => feed.url)
     validate(url, urls)
       .then(() => {
         watchedState.form.isValid = true
@@ -55,16 +55,16 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
         watchedState.sendingProcess.status = 'loading'
         getFeedRequest(url)
       })
-      .catch((error) => {
+      .catch(error => {
         watchedState.sendingProcess.status = 'failed'
         watchedState.form.error = error
         watchedState.form.isValid = false
       })
   }
 
-  const postExist = (postId) => state.posts.some((post) => post.id === postId)
+  const postExist = postId => state.posts.some(post => post.id === postId)
 
-  const readPost = (e) => {
+  const readPost = e => {
     const readPostId = e.target.dataset.id
     if (!postExist(readPostId)) {
       return
@@ -73,7 +73,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
     watchedState.openedPostInModal = readPostId
   }
 
-  const getNewPosts = (posts) => {
+  const getNewPosts = posts => {
     const initialPostsIds = state.posts.map(({ id }) => id)
     const initialPostsIdsSet = new Set(initialPostsIds)
     return posts.filter(({ id }) => !initialPostsIdsSet.has(id))
@@ -83,7 +83,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
     const { feeds } = state
 
     const promises = feeds.map(({ url }) => axiosInstance.get(getRssData(url))
-      .then((response) => {
+      .then(response => {
         const parsedData = parseRss(response.data.contents)
         const newPosts = getNewPosts(parsedData.posts)
         if (!newPosts.length) {
@@ -91,7 +91,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
         }
         watchedState.posts.push(...newPosts)
       })
-      .catch((error) => error))
+      .catch(error => error))
 
     Promise.all(promises)
       .then(() => {
@@ -151,5 +151,5 @@ export default () => {
     .then(() => {
       app(selectors, initState, i18nextInstance, axiosInstance)
     })
-    .catch((error) => { console.log(`Неизвестная ошибка: ${error.message}`) })
+    .catch(error => { console.log(`Неизвестная ошибка: ${error.message}`) })
 }
