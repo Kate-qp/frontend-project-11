@@ -6,9 +6,9 @@ export default defineConfig({
       name: 'Yandex',
       use: {
         channel: 'chrome',
-        executablePath: 'C:\\Users\\kpark\\AppData\\Local\\Yandex\\YandexBrowser\\Application\\browser.exe'
-      }
-    }
+        executablePath: 'C:\\Users\\kpark\\AppData\\Local\\Yandex\\YandexBrowser\\Application\\browser.exe',
+      },
+    },
   ],
-  timeout: 20000
+  timeout: 20000,
 })
