@@ -9,8 +9,8 @@ import resources from './lang/langs.js'
 const language = 'ru'
 const allOriginsProxyUrl = 'https://allorigins.hexlet.app/get'
 const errorsCodes = {
-  ERR_NETWORK: 'network_error',
-  ECONNABORTED: 'request_timed_out'
+  ERR_NETWORK: 'Ошибка сети',
+  ECONNABORTED: 'Таймаут запроса'
 }
 const defaultTimeout = 5000
 
@@ -45,16 +45,16 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       return
     }
 
-if (duplicateFeed) {
-  console.log('Duplicate detected, setting error state')
-  watchedState.form = {
-    isValid: false,
-    error: 'RSS уже существует',
-    feedback: 'RSS уже существует'
-  }
-  console.log('Current form state:', watchedState.form)
-  return
-}
+    const duplicateFeed = state.feeds.find(feed => feed.url === url)
+    if (duplicateFeed) {
+      watchedState.form = {
+        isValid: false,
+        error: 'RSS уже существует',
+        feedback: 'RSS уже существует'
+      }
+      watchedState.sendingProcess.status = 'failed'
+      return
+    }
 
     getFeedRequest(url)
   }
@@ -65,19 +65,19 @@ if (duplicateFeed) {
       error: null
     }
     
-    axiosInstance.get(getRssData(url), { timeout: 5000 })
-      .then(({ data }) => {
-        if (!data.contents) {
-          throw new Error('Invalid RSS feed')
+    axiosInstance.get(getRssData(url), { timeout: 10000 })
+      .then((response) => {
+        if (!response.data.contents) {
+          throw new Error('Ресурс не содержит валидный RSS')
         }
         
-        const { feed, posts } = parseRss(data.contents)
+        const { feed, posts } = parseRss(response.data.contents)
         watchedState.feeds = [
-          ...watchedState.feeds,
+          ...state.feeds,
           { ...feed, id: uuidv4(), url }
         ]
         watchedState.posts = [
-          ...watchedState.posts,
+          ...state.posts,
           ...posts.map((post) => ({
             ...post,
             id: uuidv4(),
@@ -86,9 +86,11 @@ if (duplicateFeed) {
           }))
         ]
         watchedState.sendingProcess.status = 'success'
-        watchedState.form.feedback = 'RSS успешно загружен'
-        watchedState.form.error = null
-        watchedState.form.isValid = true
+        watchedState.form = {
+          isValid: true,
+          error: null,
+          feedback: 'RSS успешно загружен'
+        }
       })
       .catch((error) => {
         watchedState.sendingProcess.status = 'failed'
@@ -96,19 +98,23 @@ if (duplicateFeed) {
                            (error.message.includes('Invalid RSS') ? 
                             'Ресурс не содержит валидный RSS' : 
                             'Ошибка сети')
-        watchedState.form.feedback = errorMessage
-        watchedState.form.error = errorMessage
-        watchedState.form.isValid = false
+        watchedState.form = {
+          isValid: false,
+          error: errorMessage,
+          feedback: errorMessage
+        }
       })
   }
 
-  const postExist = postId => state.posts.some(post => post.id === postId)
+  const postExist = (postId) => {
+    return state.posts.some(post => post.id === postId)
+  }
 
-  const readPost = e => {
+  const readPost = (e) => {
     const readPostId = e.target.dataset.id
     if (!postExist(readPostId)) return
     
-    watchedState.openedPosts = [...watchedState.openedPosts, readPostId]
+    watchedState.openedPosts = [...state.openedPosts, readPostId]
     watchedState.openedPostInModal = readPostId
 
     watchedState.posts = state.posts.map(post => 
@@ -116,7 +122,7 @@ if (duplicateFeed) {
     )
   }
 
-  const getNewPosts = posts => {
+  const getNewPosts = (posts) => {
     const initialPostsIds = state.posts.map(({ id }) => id)
     const initialPostsIdsSet = new Set(initialPostsIds)
     return posts.filter(({ id }) => !initialPostsIdsSet.has(id))
