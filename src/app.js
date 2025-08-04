@@ -25,33 +25,45 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const state = { ...initState }
   const watchedState = watch(state, selectors, i18nextInstance)
 
-  const onSubmittedForm = (e) => {
+const onSubmittedForm = (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
     const url = formData.get('url').trim()
-    
-    // Сброс состояния формы перед новой проверкой
-    watchedState.form.error = null
-    watchedState.form.feedback = null
-    
-    // Валидация URL
+
+    watchedState.form = {
+      isValid: true,
+      error: null,
+      feedback: null
+    }
+
     if (!validate(url)) {
-      watchedState.form.error = 'Ссылка должна быть валидным URL'
-      watchedState.form.feedback = 'Ссылка должна быть валидным URL'
-      watchedState.form.isValid = false
+      watchedState.form = {
+        isValid: false,
+        error: 'Ссылка должна быть валидным URL',
+        feedback: 'Ссылка должна быть валидным URL'
+      }
       return
     }
-    
-    // Проверка на дубликат
-    if (state.feeds.some(feed => feed.url === url)) {
-      watchedState.form.error = 'RSS уже существует'
-      watchedState.form.feedback = 'RSS уже существует'
-      watchedState.form.isValid = false
+
+    const duplicateFeed = state.feeds.find(feed => feed.url === url)
+    if (duplicateFeed) {
+      watchedState.form = {
+        isValid: false,
+        error: 'RSS уже существует',
+        feedback: 'RSS уже существует'
+      }
+      watchedState.sendingProcess.status = 'failed'
       return
     }
 
     getFeedRequest(url)
   }
+
+  const getFeedRequest = (url) => {
+    watchedState.sendingProcess = {
+      status: 'sending',
+      error: null
+    }
 
   const getFeedRequest = (url) => {
     watchedState.sendingProcess.status = 'sending'
