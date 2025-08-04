@@ -25,18 +25,16 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const watchedState = watch(state, selectors, i18nextInstance)
 
   const getFeedRequest = url => {
-    axiosInstance.get(getRssData(url))
-      .then(({ data }) => {
-        const { feed, posts } = parseRss(data.contents)
-        watchedState.feeds = [...watchedState.feeds, { url, ...feed }]
-        watchedState.posts = [...watchedState.posts, ...posts]
-        watchedState.sendingProcess.status = 'added'
-        watchedState.form.isValid = true
-        watchedState.form.error = null
-
-        selectors.form.input.classList.remove('is-invalid')
-      })
-      .catch(error => {
+  axiosInstance.get(getRssData(url))
+    .then(({ data }) => {
+      const { feed, posts } = parseRss(data.contents)
+      watchedState.feeds = [...watchedState.feeds, { url, ...feed }]
+      watchedState.posts = [...watchedState.posts, ...posts]
+      watchedState.sendingProcess.status = 'added'
+      watchedState.form.error = null
+    })
+}
+     .catch(error => {
         watchedState.sendingProcess.status = 'failed'
         watchedState.sendingProcess.errors = errorsCodes[error.code] ?? new Error('rss.invalid')
       })

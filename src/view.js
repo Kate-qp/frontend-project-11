@@ -31,8 +31,9 @@ const enableForm = (rssForm) => {
 
 const handleProcess = (selectors, processStatus, i18nextInstance) => {
   switch (processStatus) {
-    case 'wait':
+    case 'added':
       clearMessage(selectors.feedback)
+      selectors.feedback.textContent = i18nextInstance.t('success.loaded')
       break
     case 'added':
       clearMessage(selectors.feedback)
