@@ -1,21 +1,29 @@
-const validate = (url, urls) => {
+const validate = (url, existingUrls = []) => {
   return new Promise((resolve, reject) => {
     try {
-      const urlObj = new URL(url)
+      // Проверяем, что URL не пустой
+      if (!url || typeof url !== 'string') {
+        throw new Error('errors.empty')
+      }
+
+      // Создаем URL объект для проверки формата
+      const urlObj = new URL(url.trim())
       
-      if (urls.includes(url)) {
-        const error = new Error('errors.exist')
-        error.isUrlExist = true
-        throw error
+      // Проверяем, что URL не добавлен ранее
+      if (existingUrls.includes(url.trim())) {
+        throw new Error('errors.exist')
       }
       
-      resolve()
+      // Если все проверки пройдены
+      resolve(true)
     } catch (err) {
-      if (err.isUrlExist) {
-        reject(err)
+      // Обрабатываем разные типы ошибок
+      if (err.message === 'errors.exist') {
+        reject(new Error('RSS уже существует'))
+      } else if (err.message === 'errors.empty') {
+        reject(new Error('Ссылка должна быть валидным URL'))
       } else {
-        const error = new Error('errors.invalid')
-        reject(error)
+        reject(new Error('Ссылка должна быть валидным URL'))
       }
     }
   })

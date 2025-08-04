@@ -25,96 +25,33 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const state = { ...initState }
   const watchedState = watch(state, selectors, i18nextInstance)
 
-  const updateFormState = (isValid, message) => {
+  const handleFormSubmit = (e) => {
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    const url = formData.get('url').trim()
+
     watchedState.form = {
-      isValid,
-      error: isValid ? null : message,
-      feedback: message
+      isValid: true,
+      error: null,
+      feedback: null
     }
-    // Обязательно обновляем статус отправки
-    watchedState.sendingProcess = {
-      status: isValid ? 'success' : 'failed',
-      error: isValid ? null : message
-    }
-  }
-
-  const onSubmittedForm = (e) => {
-    e.preventDefault()
-    const formData = new FormData(e.target)
-    const url = formData.get('url').trim()
-
-    // Сбрасываем состояние перед проверкой
-    updateFormState(true, null)
-
-    // Валидация URL
-    if (!validate(url)) {
-      updateFormState(false, 'Ссылка должна быть валидным URL')
-      return
-    }
-
-    // Проверка на дубликат
-    const duplicateFeed = state.feeds.some(feed => feed.url === url)
-    if (duplicateFeed) {
-      updateFormState(false, 'RSS уже существует')
-      return
-    }
-
-    // Если все проверки пройдены - загружаем RSS
-    getFeedRequest(url)
-  }
-
-  const getFeedRequest = (url) => {
-    watchedState.sendingProcess = {
-      status: 'sending',
-      error: null
-    }
-    
-    axiosInstance.get(getRssData(url), { timeout: 10000 })
-      .then((response) => {
-        if (!response.data.contents) {
-          throw new Error('Invalid RSS feed')
-        }
-        
-        const { feed, posts } = parseRss(response.data.contents)
-        watchedState.feeds = [
-          ...state.feeds,
-          { ...feed, id: uuidv4(), url }
-        ]
-        watchedState.posts = [
-          ...state.posts,
-          ...posts.map(post => ({
-            ...post,
-            id: uuidv4(),
-            feedId: feed.id,
-            visited: false
-          }))
-        ]
-        updateFormState(true, 'RSS успешно загружен')
-      })
-      .catch((error) => {
-        const errorMessage = errorsCodes[error.code] || 
-                         (error.message.includes('Invalid RSS') ? 
-                          'Ресурс не содержит валидный RSS' : 
-                          'Ошибка сети')
-        updateFormState(false, errorMessage)
-      })
-  }
-
-  const onSubmittedForm = (e) => {
-    e.preventDefault()
-    const formData = new FormData(e.target)
-    const url = formData.get('url').trim()
-
-    updateFormState(true, null)
 
     if (!validate(url)) {
-      updateFormState(false, 'Ссылка должна быть валидным URL')
+      watchedState.form = {
+        isValid: false,
+        error: 'Ссылка должна быть валидным URL',
+        feedback: 'Ссылка должна быть валидным URL'
+      }
       return
     }
 
     const duplicateFeed = state.feeds.some(feed => feed.url === url)
     if (duplicateFeed) {
-      updateFormState(false, 'RSS уже существует')
+      watchedState.form = {
+        isValid: false,
+        error: 'RSS уже существует',
+        feedback: 'RSS уже существует'
+      }
       return
     }
 
@@ -148,7 +85,11 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
           }))
         ]
         watchedState.sendingProcess.status = 'success'
-        updateFormState(true, 'RSS успешно загружен')
+        watchedState.form = {
+          isValid: true,
+          error: null,
+          feedback: 'RSS успешно загружен'
+        }
       })
       .catch((error) => {
         watchedState.sendingProcess.status = 'failed'
@@ -156,13 +97,17 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
                          (error.message.includes('Invalid RSS') ? 
                           'Ресурс не содержит валидный RSS' : 
                           'Ошибка сети')
-        updateFormState(false, errorMessage)
+        watchedState.form = {
+          isValid: false,
+          error: errorMessage,
+          feedback: errorMessage
+        }
       })
   }
 
   const postExist = (postId) => state.posts.some(post => post.id === postId)
 
-  const readPost = (e) => {
+  const handlePostClick = (e) => {
     const readPostId = e.target.dataset.id
     if (!postExist(readPostId)) return
     
@@ -210,15 +155,14 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       .finally(() => setTimeout(updatePosts, defaultTimeout))
   }
 
- if (selectors.postsDiv) {
-    selectors.postsDiv.addEventListener('click', readPost)
+  if (selectors.postsDiv) {
+    selectors.postsDiv.addEventListener('click', handlePostClick)
   }
 
-  selectors.form.objectForm.addEventListener('submit', onSubmittedForm)
+  selectors.form.objectForm.addEventListener('submit', handleFormSubmit)
   selectors.form.input.addEventListener('input', () => {
-    if (state.form.error || state.form.feedback) {
-      updateFormState(true, null)
-    }
+    watchedState.form.error = null
+    watchedState.form.feedback = null
   })
 
   updatePosts()
