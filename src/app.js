@@ -25,7 +25,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const state = { ...initState }
   const watchedState = watch(state, selectors, i18nextInstance)
 
-const onSubmittedForm = (e) => {
+  const onSubmittedForm = (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
     const url = formData.get('url').trim()
@@ -64,9 +64,6 @@ const onSubmittedForm = (e) => {
       status: 'sending',
       error: null
     }
-
-  const getFeedRequest = (url) => {
-    watchedState.sendingProcess.status = 'sending'
     
     axiosInstance.get(getRssData(url), { timeout: 5000 })
       .then(({ data }) => {
