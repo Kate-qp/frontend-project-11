@@ -52,7 +52,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
         error: 'RSS уже существует',
         feedback: 'RSS уже существует'
       }
-      watchedState.sendingProcess.status = 'failed'
+      watchedState.sendingProcess.status = 'idle'
       return
     }
 
@@ -68,7 +68,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
     axiosInstance.get(getRssData(url), { timeout: 10000 })
       .then((response) => {
         if (!response.data.contents) {
-          throw new Error('Ресурс не содержит валидный RSS')
+          throw new Error('Invalid RSS feed')
         }
         
         const { feed, posts } = parseRss(response.data.contents)
@@ -95,9 +95,9 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       .catch((error) => {
         watchedState.sendingProcess.status = 'failed'
         const errorMessage = errorsCodes[error.code] || 
-                           (error.message.includes('Invalid RSS') ? 
-                            'Ресурс не содержит валидный RSS' : 
-                            'Ошибка сети')
+                         (error.message.includes('Invalid RSS') ? 
+                          'Ресурс не содержит валидный RSS' : 
+                          'Ошибка сети')
         watchedState.form = {
           isValid: false,
           error: errorMessage,
@@ -106,9 +106,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       })
   }
 
-  const postExist = (postId) => {
-    return state.posts.some(post => post.id === postId)
-  }
+  const postExist = (postId) => state.posts.some(post => post.id === postId)
 
   const readPost = (e) => {
     const readPostId = e.target.dataset.id
