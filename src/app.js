@@ -33,7 +33,6 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       watchedState.sendingProcess.status = 'added'
       watchedState.form.error = null
     })
-}
      .catch(error => {
         watchedState.sendingProcess.status = 'failed'
         watchedState.sendingProcess.errors = errorsCodes[error.code] ?? new Error('rss.invalid')
