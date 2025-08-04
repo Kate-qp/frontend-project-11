@@ -28,15 +28,40 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const onSubmittedForm = (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
-    const url = formData.get('url')
+    const url = formData.get('url').trim()
+    
+    // Сброс состояния формы перед новой проверкой
+    watchedState.form.error = null
+    watchedState.form.feedback = null
+    
+    // Валидация URL
+    if (!validate(url)) {
+      watchedState.form.error = 'Ссылка должна быть валидным URL'
+      watchedState.form.feedback = 'Ссылка должна быть валидным URL'
+      watchedState.form.isValid = false
+      return
+    }
+    
+    // Проверка на дубликат
+    if (state.feeds.some(feed => feed.url === url)) {
+      watchedState.form.error = 'RSS уже существует'
+      watchedState.form.feedback = 'RSS уже существует'
+      watchedState.form.isValid = false
+      return
+    }
+
     getFeedRequest(url)
   }
 
   const getFeedRequest = (url) => {
     watchedState.sendingProcess.status = 'sending'
     
-    axiosInstance.get(getRssData(url))
+    axiosInstance.get(getRssData(url), { timeout: 5000 })
       .then(({ data }) => {
+        if (!data.contents) {
+          throw new Error('Invalid RSS feed')
+        }
+        
         const { feed, posts } = parseRss(data.contents)
         watchedState.feeds = [
           ...watchedState.feeds,
@@ -47,7 +72,8 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
           ...posts.map((post) => ({
             ...post,
             id: uuidv4(),
-            feedId: feed.id
+            feedId: feed.id,
+            visited: false
           }))
         ]
         watchedState.sendingProcess.status = 'success'
@@ -57,8 +83,12 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       })
       .catch((error) => {
         watchedState.sendingProcess.status = 'failed'
-        watchedState.form.feedback = errorsCodes[error.code] ?? 'Ошибка при загрузке RSS'
-        watchedState.form.error = watchedState.form.feedback
+        const errorMessage = errorsCodes[error.code] || 
+                           (error.message.includes('Invalid RSS') ? 
+                            'Ресурс не содержит валидный RSS' : 
+                            'Ошибка сети')
+        watchedState.form.feedback = errorMessage
+        watchedState.form.error = errorMessage
         watchedState.form.isValid = false
       })
   }
@@ -67,11 +97,14 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
 
   const readPost = e => {
     const readPostId = e.target.dataset.id
-    if (!postExist(readPostId)) {
-      return
-    }
+    if (!postExist(readPostId)) return
+    
     watchedState.openedPosts = [...watchedState.openedPosts, readPostId]
     watchedState.openedPostInModal = readPostId
+
+    watchedState.posts = state.posts.map(post => 
+      post.id === readPostId ? { ...post, visited: true } : post
+    )
   }
 
   const getNewPosts = posts => {
@@ -81,23 +114,33 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   }
 
   const updatePosts = () => {
-    const { feeds } = state
+    if (state.feeds.length === 0) {
+      setTimeout(updatePosts, defaultTimeout)
+      return
+    }
 
-    const promises = feeds.map(({ url }) => axiosInstance.get(getRssData(url))
-      .then(response => {
-        const parsedData = parseRss(response.data.contents)
-        const newPosts = getNewPosts(parsedData.posts)
-        if (!newPosts.length) {
-          return
-        }
-        watchedState.posts.push(...newPosts)
-      })
-      .catch(error => error))
+    const promises = state.feeds.map(({ url, id }) => 
+      axiosInstance.get(getRssData(url))
+        .then(response => {
+          const parsedData = parseRss(response.data.contents)
+          const newPosts = getNewPosts(parsedData.posts)
+          if (newPosts.length > 0) {
+            watchedState.posts = [
+              ...newPosts.map(post => ({
+                ...post,
+                id: uuidv4(),
+                feedId: id,
+                visited: false
+              })),
+              ...state.posts
+            ]
+          }
+        })
+        .catch(() => {})
+    )
 
     Promise.all(promises)
-      .then(() => {
-        setTimeout(updatePosts, defaultTimeout)
-      })
+      .finally(() => setTimeout(updatePosts, defaultTimeout))
   }
 
   if (selectors.postsDiv) {
@@ -105,6 +148,10 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   }
 
   selectors.form.objectForm.addEventListener('submit', onSubmittedForm)
+  selectors.form.input.addEventListener('input', () => {
+    watchedState.form.error = null
+    watchedState.form.feedback = null
+  })
 
   updatePosts()
 }
