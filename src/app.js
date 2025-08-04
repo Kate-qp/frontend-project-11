@@ -45,16 +45,16 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       return
     }
 
-    const duplicateFeed = state.feeds.find(feed => feed.url === url)
-    if (duplicateFeed) {
-      watchedState.form = {
-        isValid: false,
-        error: 'RSS уже существует',
-        feedback: 'RSS уже существует'
-      }
-      watchedState.sendingProcess.status = 'failed'
-      return
-    }
+if (duplicateFeed) {
+  console.log('Duplicate detected, setting error state')
+  watchedState.form = {
+    isValid: false,
+    error: 'RSS уже существует',
+    feedback: 'RSS уже существует'
+  }
+  console.log('Current form state:', watchedState.form)
+  return
+}
 
     getFeedRequest(url)
   }
