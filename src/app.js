@@ -44,7 +44,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
           }))
         ]
         watchedState.sendingProcess.status = 'success'
-        watchedState.form.feedback = 'RSS успешно загружен'
+        watchedState.form.feedback = 'RSS загружен успешно'
         watchedState.form.error = null
       })
       .catch((error) => {
