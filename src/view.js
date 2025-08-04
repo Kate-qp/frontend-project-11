@@ -1,22 +1,14 @@
 import onChange from 'on-change'
 
 const clearMessage = (paragraph) => {
-  const updatedParagraph = paragraph
-  updatedParagraph.classList.remove('text-danger')
-  updatedParagraph.classList.remove('text-success')
-  updatedParagraph.textContent = ''
+  paragraph.classList.remove('text-danger')
+  paragraph.classList.remove('text-success')
+  paragraph.textContent = ''
 }
 
-const showMessage = (paragraph, message) => {
-  const updatedParagraph = paragraph
-  updatedParagraph.textContent = message
-}
-
-const showErrorMessage = (paragraph, error, i18nextInstance) => {
-  const message = i18nextInstance.t(error.message)
-  clearMessage(paragraph)
-  showMessage(paragraph, message)
-  paragraph.classList.add('text-danger')
+const showMessage = (paragraph, message, isSuccess) => {
+  paragraph.textContent = message
+  paragraph.classList.add(isSuccess ? 'text-success' : 'text-danger')
 }
 
 const disableForm = (rssForm) => {
@@ -33,15 +25,21 @@ export const renderFeedback = (state, i18nextInstance) => {
   const feedbackEl = document.querySelector('.feedback')
   if (!feedbackEl) return
   
-  clearMessage(feedbackEl)
-  
-  if (state.sendingProcess.status === 'success') {
-    feedbackEl.textContent = i18nextInstance.t('success.loaded')
-    feedbackEl.classList.add('text-success')
+  // Очищаем только если нет важных сообщений
+  if (!state.form.feedback && !state.form.error) {
+    clearMessage(feedbackEl)
+  }
+
+  // Приоритет у сообщений из формы
+  if (state.form.feedback) {
+    showMessage(feedbackEl, state.form.feedback, state.form.isValid)
+  } else if (state.form.error) {
+    showMessage(feedbackEl, state.form.error, false)
+  } else if (state.sendingProcess.status === 'success') {
+    showMessage(feedbackEl, i18nextInstance.t('success.loaded'), true)
   } else if (state.sendingProcess.status === 'failed') {
     const errorKey = state.sendingProcess.error || 'errors.invalid'
-    feedbackEl.textContent = i18nextInstance.t(errorKey)
-    feedbackEl.classList.add('text-danger')
+    showMessage(feedbackEl, i18nextInstance.t(errorKey), false)
   }
 }
 
@@ -51,21 +49,16 @@ const handleProcess = (selectors, processStatus, i18nextInstance) => {
       disableForm(selectors.form)
       break
     case 'success':
-      clearMessage(selectors.feedback)
-      selectors.feedback.textContent = i18nextInstance.t('success.loaded')
-      selectors.feedback.classList.add('text-success')
       enableForm(selectors.form)
       selectors.form.objectForm.reset()
       selectors.form.input.focus()
       break
     case 'failed':
-      selectors.feedback.classList.add('text-danger')
-      showMessage(selectors.feedback, i18nextInstance.t('errors.invalid'))
       enableForm(selectors.form)
       selectors.form.input.focus()
       break
     default:
-      throw new Error(`Unknown status: ${processStatus}`)
+      break
   }
 }
 
@@ -175,15 +168,16 @@ export default (state, selectors, i18nextInstance) => onChange(state, (path, val
       selectors.form.input.classList.toggle('is-invalid', !value)
       selectors.form.input.focus()
       break
+    case 'form.feedback':
+    case 'form.error':
+      renderFeedback(state, i18nextInstance)
+      break
     case 'sendingProcess.status':
       handleProcess(selectors, value, i18nextInstance)
       renderFeedback(state, i18nextInstance)
       break
     case 'sendingProcess.error':
       renderFeedback(state, i18nextInstance)
-      break
-    case 'form.error':
-      showErrorMessage(selectors.feedback, value, i18nextInstance)
       break
     case 'feeds':
       showFeeds(selectors.feedsDiv, state, i18nextInstance)
