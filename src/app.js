@@ -1,20 +1,20 @@
+import { v4 as uuidv4 } from 'uuid'
 import i18next from 'i18next'
 import axios from 'axios'
-import { v4 as uuidv4 } from 'uuid'
-import watch from './view.js'
-import validate from './validator.js'
-import parseRss from './rssParser.js'
-import resources from './lang/langs.js'
+import watch from './view'
+import validate from './validator'
+import parseRss from './rssParser'
+import resources from './lang/langs'
 
 const language = 'ru'
 const allOriginsProxyUrl = 'https://allorigins.hexlet.app/get'
 const errorsCodes = {
-  ERR_NETWORK: new Error('network_error'),
-  ECONNABORTED: new Error('request_timed_out'),
+  ERR_NETWORK: 'network_error',
+  ECONNABORTED: 'request_timed_out'
 }
 const defaultTimeout = 5000
 
-const getRssData = url => {
+const getRssData = (url) => {
   const objectUrl = new URL(allOriginsProxyUrl)
   objectUrl.searchParams.set('disableCache', 'true')
   objectUrl.searchParams.set('url', url)
@@ -27,8 +27,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
 
   const getFeedRequest = (url) => {
     watchedState.sendingProcess.status = 'sending'
-    watchedState.form.processState = 'processing'
-
+    
     axiosInstance.get(getRssData(url))
       .then(({ data }) => {
         const { feed, posts } = parseRss(data.contents)
@@ -45,38 +44,33 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
           }))
         ]
         watchedState.sendingProcess.status = 'success'
-        watchedState.form.processState = 'finished'
         watchedState.form.feedback = i18nextInstance.t('success.loaded')
         watchedState.form.error = null
       })
       .catch((error) => {
         watchedState.sendingProcess.status = 'failed'
-        watchedState.form.processState = 'failed'
-        watchedState.form.feedback = errorsCodes[error.code] ?? i18nextInstance.t('errors.invalid')
-        watchedState.form.error = watchedState.form.feedback
-      })
-      .finally(() => {
-        watchedState.sendingProcess.status = 'idle'
+        const errorKey = errorsCodes[error.code] || 'errors.invalid'
+        watchedState.form.feedback = i18nextInstance.t(errorKey)
+        watchedState.form.error = error
       })
   }
 
-  const onSubmittedForm = e => {
+  const onSubmittedForm = (e) => {
     e.preventDefault()
-
-    const url = new FormData(e.target).get('url')
-    const urls = state.feeds.map(feed => feed.url)
+    const formData = new FormData(e.target)
+    const url = formData.get('url').trim()
+    const urls = state.feeds.map((feed) => feed.url)
+    
     validate(url, urls)
       .then(() => {
         watchedState.form.isValid = true
         watchedState.form.error = null
-
-        watchedState.sendingProcess.status = 'loading'
         getFeedRequest(url)
       })
-      .catch(error => {
-        watchedState.sendingProcess.status = 'failed'
-        watchedState.form.error = error
+      .catch((error) => {
         watchedState.form.isValid = false
+        watchedState.form.error = error
+        watchedState.form.feedback = i18nextInstance.t(error.message)
       })
   }
 
@@ -131,45 +125,41 @@ export default () => {
     form: {
       objectForm: document.querySelector('.rss-form'),
       input: document.querySelector('#url-input'),
-      btnSubmit: document.querySelector('button[type="submit"]'),
+      btnSubmit: document.querySelector('button[type="submit"]')
     },
     feedback: document.querySelector('.feedback'),
     feedsDiv: document.querySelector('.feeds'),
     postsDiv: document.querySelector('.posts'),
-    modal: document.querySelector('#modal'),
+    modal: document.querySelector('#modal')
   }
 
   const initState = {
     form: {
       isValid: true,
       error: null,
-      feedback: null,
-      processState: 'filling',
+      feedback: null
     },
     sendingProcess: {
       status: 'idle',
-      error: null,
+      error: null
     },
     feeds: [],
     posts: [],
     openedPosts: [],
     openedPostInModal: null,
-    language,
+    language
   }
 
   const i18nextInstance = i18next.createInstance()
   const axiosInstance = axios.create({
-    timeout: 10000,
+    timeout: 10000
   })
 
-  i18nextInstance
-    .init({
-      debug: false,
-      resources,
-      fallbackLng: initState.language,
-    })
-    .then(() => {
-      app(selectors, initState, i18nextInstance, axiosInstance)
-    })
-    .catch(error => { console.log(`Неизвестная ошибка: ${error.message}`) })
+  i18nextInstance.init({
+    lng: language,
+    debug: false,
+    resources
+  }).then(() => {
+    app(selectors, initState, i18nextInstance, axiosInstance)
+  })
 }
