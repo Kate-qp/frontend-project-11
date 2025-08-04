@@ -28,7 +28,26 @@ const enableForm = (rssForm) => {
   rssForm.input.removeAttribute('disabled')
   rssForm.btnSubmit.removeAttribute('disabled')
 }
-
+export const renderFeedback = (state) => {
+  const feedbackEl = document.querySelector('.feedback')
+  if (!feedbackEl) return
+  
+  if (state.form.processState === 'finished' && state.form.feedback) {
+    feedbackEl.innerHTML = `
+      <div class="alert alert-success">${state.form.feedback}</div>
+    `
+    feedbackEl.classList.remove('text-danger')
+    feedbackEl.classList.add('text-success')
+  } else if (state.form.processState === 'failed' && state.form.feedback) {
+    feedbackEl.innerHTML = `
+      <div class="alert alert-danger">${state.form.feedback}</div>
+    `
+    feedbackEl.classList.remove('text-success')
+    feedbackEl.classList.add('text-danger')
+  } else {
+    feedbackEl.innerHTML = ''
+  }
+}
 const handleProcess = (selectors, processStatus, i18nextInstance) => {
   switch (processStatus) {
     case 'added':

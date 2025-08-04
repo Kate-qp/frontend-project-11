@@ -24,34 +24,41 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const state = { ...initState }
   const watchedState = watch(state, selectors, i18nextInstance)
 
-  const getFeedRequest = url => {
+const getFeedRequest = (url) => {
   watchedState.sendingProcess.status = 'sending'
-  
+  watchedState.form.processState = 'processing'
+
   axiosInstance.get(getRssData(url))
     .then(({ data }) => {
       const { feed, posts } = parseRss(data.contents)
       watchedState.feeds = [
         ...watchedState.feeds,
-        { ...feed, id: uuidv4, url }
+        { ...feed, id: uuidv4(), url }
       ]
       watchedState.posts = [
         ...watchedState.posts,
-        ...posts.map(post => ({
+        ...posts.map((post) => ({
           ...post,
           id: uuidv4(),
           feedId: feed.id
         }))
       ]
       watchedState.sendingProcess.status = 'success'
+      watchedState.form.processState = 'finished'
+      watchedState.form.feedback = 'RSS успешно загружен'
       watchedState.form.error = null
-      watchedState.form.success = 'RSS успешно загружен'
     })
     .catch((error) => {
       watchedState.sendingProcess.status = 'failed'
-      watchedState.sendingProcess.error = errorsCodes[error.code] ?? 'rss.invalid'
-      watchedState.form.error = 'Ошибка при загрузке RSS'
+      watchedState.form.processState = 'failed'
+      watchedState.form.feedback = errorsCodes[error.code] ?? 'Ошибка при загрузке RSS'
+      watchedState.form.error = watchedState.form.feedback
+    })
+    .finally(() => {
+      watchedState.sendingProcess.status = 'idle'
     })
 }
+
 
   const onSubmittedForm = e => {
     e.preventDefault()
