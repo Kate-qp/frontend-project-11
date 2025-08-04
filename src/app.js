@@ -44,35 +44,15 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
           }))
         ]
         watchedState.sendingProcess.status = 'success'
-        watchedState.form.feedback = i18nextInstance.t('success.loaded')
+        watchedState.form.feedback = 'RSS успешно загружен'
         watchedState.form.error = null
       })
       .catch((error) => {
         watchedState.sendingProcess.status = 'failed'
-        const errorKey = errorsCodes[error.code] || 'errors.invalid'
-        watchedState.form.feedback = i18nextInstance.t(errorKey)
-        watchedState.form.error = error
+        watchedState.form.feedback = errorsCodes[error.code] ?? 'Ошибка при загрузке RSS'
+        watchedState.form.error = watchedState.form.feedback
       })
-  }
-
-  const onSubmittedForm = (e) => {
-    e.preventDefault()
-    const formData = new FormData(e.target)
-    const url = formData.get('url').trim()
-    const urls = state.feeds.map((feed) => feed.url)
-    
-    validate(url, urls)
-      .then(() => {
-        watchedState.form.isValid = true
-        watchedState.form.error = null
-        getFeedRequest(url)
-      })
-      .catch((error) => {
-        watchedState.form.isValid = false
-        watchedState.form.error = error
-        watchedState.form.feedback = i18nextInstance.t(error.message)
-      })
-  }
+}
 
   const postExist = postId => state.posts.some(post => post.id === postId)
 
