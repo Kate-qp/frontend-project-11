@@ -28,42 +28,35 @@ const enableForm = (rssForm) => {
   rssForm.input.removeAttribute('disabled')
   rssForm.btnSubmit.removeAttribute('disabled')
 }
-export const renderFeedback = (state) => {
+
+export const renderFeedback = (state, i18nextInstance) => {
   const feedbackEl = document.querySelector('.feedback')
   if (!feedbackEl) return
   
-  if (state.form.processState === 'finished' && state.form.feedback) {
-    feedbackEl.innerHTML = `
-      <div class="alert alert-success">${state.form.feedback}</div>
-    `
-    feedbackEl.classList.remove('text-danger')
+  clearMessage(feedbackEl)
+  
+  if (state.sendingProcess.status === 'success') {
+    feedbackEl.textContent = i18nextInstance.t('success.loaded')
     feedbackEl.classList.add('text-success')
-  } else if (state.form.processState === 'failed' && state.form.feedback) {
-    feedbackEl.innerHTML = `
-      <div class="alert alert-danger">${state.form.feedback}</div>
-    `
-    feedbackEl.classList.remove('text-success')
+  } else if (state.sendingProcess.status === 'failed') {
+    const errorKey = state.sendingProcess.error || 'errors.invalid'
+    feedbackEl.textContent = i18nextInstance.t(errorKey)
     feedbackEl.classList.add('text-danger')
-  } else {
-    feedbackEl.innerHTML = ''
   }
 }
+
 const handleProcess = (selectors, processStatus, i18nextInstance) => {
   switch (processStatus) {
-    case 'added':
+    case 'sending':
+      disableForm(selectors.form)
+      break
+    case 'success':
       clearMessage(selectors.feedback)
       selectors.feedback.textContent = i18nextInstance.t('success.loaded')
-      break
-    case 'added':
-      clearMessage(selectors.feedback)
       selectors.feedback.classList.add('text-success')
-      showMessage(selectors.feedback, i18nextInstance.t('success.added'))
       enableForm(selectors.form)
       selectors.form.objectForm.reset()
       selectors.form.input.focus()
-      break
-    case 'loading':
-      disableForm(selectors.form)
       break
     case 'failed':
       selectors.feedback.classList.add('text-danger')
@@ -183,16 +176,14 @@ export default (state, selectors, i18nextInstance) => onChange(state, (path, val
       selectors.form.input.focus()
       break
     case 'sendingProcess.status':
-      handleProcess(selectors, state.sendingProcess.status, i18nextInstance)
+      handleProcess(selectors, value, i18nextInstance)
+      renderFeedback(state, i18nextInstance)
       break
-    case 'sendingProcess.errors':
-      showErrorMessage(selectors.feedback, state.sendingProcess.errors, i18nextInstance)
+    case 'sendingProcess.error':
+      renderFeedback(state, i18nextInstance)
       break
     case 'form.error':
       showErrorMessage(selectors.feedback, value, i18nextInstance)
-      break
-    case 'loading':
-      disableForm()
       break
     case 'feeds':
       showFeeds(selectors.feedsDiv, state, i18nextInstance)
@@ -207,6 +198,6 @@ export default (state, selectors, i18nextInstance) => onChange(state, (path, val
       openModal(value, state.posts, selectors.modal)
       break
     default:
-      throw new Error(`Unknown path: ${path}`)
+      break
   }
 })

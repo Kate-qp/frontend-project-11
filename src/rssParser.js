@@ -4,47 +4,61 @@ const isValidXML = (document) => {
 }
 
 const getPosts = (xmlDocument) => {
-  const postElements = xmlDocument.getElementsByTagName('item')
+  const postElements = xmlDocument.querySelectorAll('item, entry')
 
   if (!postElements.length) {
     return []
   }
 
   return Array.from(postElements).map((postElement) => {
-    const pubDate = postElement.querySelector('pubDate')
+    const pubDate = postElement.querySelector('pubDate, published, updated')
     const title = postElement.querySelector('title')
-    const description = postElement.querySelector('description')
+    const description = postElement.querySelector('description, summary')
     const link = postElement.querySelector('link')
-    const id = postElement.querySelector('guid')
+    const id = postElement.querySelector('guid, id')
 
     return {
-      title: title ? title.textContent : null,
-      description: description ? description.textContent : null,
-      link: link ? link.textContent : null,
-      id: id ? id.textContent.replace(/\D/g, '') : null,
-      pubDate: pubDate ? Date.parse(pubDate.textContent) : null,
+      title: title ? title.textContent.trim() : '',
+      description: description ? description.textContent.trim() : '',
+      link: link ? (link.textContent || link.getAttribute('href')).trim() : '',
+      id: id ? id.textContent.replace(/\D/g, '') : Date.now().toString(),
+      pubDate: pubDate ? Date.parse(pubDate.textContent) : Date.now(),
     }
   })
 }
 
 const getFeed = (xmlDocument) => {
-  const title = xmlDocument.querySelector('title')
-  const description = xmlDocument.querySelector('description')
+  const channel = xmlDocument.querySelector('channel, feed')
+  if (!channel) {
+    throw new Error('rss.invalid')
+  }
+
+  const title = channel.querySelector('title')
+  const description = channel.querySelector('description, subtitle')
 
   return {
-    title: title ? title.textContent : null,
-    description: description ? description.textContent : null,
+    title: title ? title.textContent.trim() : '',
+    description: description ? description.textContent.trim() : '',
   }
 }
 
 export default (xml) => {
+  if (!xml || typeof xml !== 'string') {
+    throw new Error('rss.invalid')
+  }
+
   const xmlDocument = new DOMParser().parseFromString(xml, 'text/xml')
 
   if (!isValidXML(xmlDocument)) {
     throw new Error('rss.invalid')
   }
-  return {
-    feed: getFeed(xmlDocument),
-    posts: getPosts(xmlDocument),
+
+  try {
+    return {
+      feed: getFeed(xmlDocument),
+      posts: getPosts(xmlDocument),
+    }
+  } catch (error) {
+    throw new Error('rss.invalid')
   }
 }

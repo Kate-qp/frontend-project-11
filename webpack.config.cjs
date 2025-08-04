@@ -1,11 +1,12 @@
 /* eslint-env node */
+const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
-const path = require('path')
+
 const isProduction = process.env.NODE_ENV === 'production'
 
-const config = {
+module.exports = {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -13,53 +14,41 @@ const config = {
     clean: true,
     assetModuleFilename: 'assets/[hash][ext][query]'
   },
+  mode: isProduction ? 'production' : 'development',
+  devtool: isProduction ? false : 'eval-source-map',
   devServer: {
     open: true,
     host: 'localhost',
     hot: true,
+    static: {
+      directory: path.join(__dirname, 'public')
+    },
     client: {
       overlay: {
         errors: true,
         warnings: false
       }
-    },
-    static: {
-      directory: path.join(__dirname, 'public')
     }
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'index.html',
+      template: './index.html',
       minify: isProduction
     }),
     new MiniCssExtractPlugin({
       filename: isProduction ? '[name].[contenthash].css' : '[name].css'
     })
   ],
-  optimization: {
-    minimize: isProduction,
-    minimizer: ['...', new CssMinimizerPlugin()],
-    splitChunks: {
-      chunks: 'all',
-      minSize: 20000,
-      maxSize: 244 * 1024,
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all'
-        }
-      }
-    },
-    runtimeChunk: 'single'
-  },
   module: {
     rules: [
       {
-        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-        type: 'asset/resource',
-        generator: {
-          filename: 'assets/[hash][ext][query]'
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
         }
       },
       {
@@ -75,27 +64,42 @@ const config = {
         use: [
           isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
           'css-loader',
-          {
-            loader: 'sass-loader',
-            options: {
-              sassOptions: {
-                quietDeps: true
-              }
-            }
-          }
+          'sass-loader'
         ]
       },
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
+        test: /\.(png|svg|jpg|jpeg|gif|webp)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[hash][ext][query]'
+        }
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[hash][ext][query]'
         }
       }
     ]
+  },
+  optimization: {
+    minimize: isProduction,
+    minimizer: [
+      '...',
+      new CssMinimizerPlugin()
+    ],
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        }
+      }
+    },
+    runtimeChunk: 'single'
   },
   resolve: {
     extensions: ['.js', '.jsx'],
@@ -108,15 +112,4 @@ const config = {
     maxAssetSize: 244 * 1024,
     maxEntrypointSize: 244 * 1024
   }
-}
-
-module.exports = () => {
-  if (isProduction) {
-    config.mode = 'production'
-  } 
-  else {
-    config.mode = 'development'
-    config.devtool = 'eval-source-map'
-  }
-  return config
 }

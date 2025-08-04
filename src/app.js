@@ -1,5 +1,6 @@
 import i18next from 'i18next'
 import axios from 'axios'
+import { v4 as uuidv4 } from 'uuid'
 import watch from './view.js'
 import validate from './validator.js'
 import parseRss from './rssParser.js'
@@ -24,41 +25,40 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
   const state = { ...initState }
   const watchedState = watch(state, selectors, i18nextInstance)
 
-const getFeedRequest = (url) => {
-  watchedState.sendingProcess.status = 'sending'
-  watchedState.form.processState = 'processing'
+  const getFeedRequest = (url) => {
+    watchedState.sendingProcess.status = 'sending'
+    watchedState.form.processState = 'processing'
 
-  axiosInstance.get(getRssData(url))
-    .then(({ data }) => {
-      const { feed, posts } = parseRss(data.contents)
-      watchedState.feeds = [
-        ...watchedState.feeds,
-        { ...feed, id: uuidv4(), url }
-      ]
-      watchedState.posts = [
-        ...watchedState.posts,
-        ...posts.map((post) => ({
-          ...post,
-          id: uuidv4(),
-          feedId: feed.id
-        }))
-      ]
-      watchedState.sendingProcess.status = 'success'
-      watchedState.form.processState = 'finished'
-      watchedState.form.feedback = 'RSS успешно загружен'
-      watchedState.form.error = null
-    })
-    .catch((error) => {
-      watchedState.sendingProcess.status = 'failed'
-      watchedState.form.processState = 'failed'
-      watchedState.form.feedback = errorsCodes[error.code] ?? 'Ошибка при загрузке RSS'
-      watchedState.form.error = watchedState.form.feedback
-    })
-    .finally(() => {
-      watchedState.sendingProcess.status = 'idle'
-    })
-}
-
+    axiosInstance.get(getRssData(url))
+      .then(({ data }) => {
+        const { feed, posts } = parseRss(data.contents)
+        watchedState.feeds = [
+          ...watchedState.feeds,
+          { ...feed, id: uuidv4(), url }
+        ]
+        watchedState.posts = [
+          ...watchedState.posts,
+          ...posts.map((post) => ({
+            ...post,
+            id: uuidv4(),
+            feedId: feed.id
+          }))
+        ]
+        watchedState.sendingProcess.status = 'success'
+        watchedState.form.processState = 'finished'
+        watchedState.form.feedback = i18nextInstance.t('success.loaded')
+        watchedState.form.error = null
+      })
+      .catch((error) => {
+        watchedState.sendingProcess.status = 'failed'
+        watchedState.form.processState = 'failed'
+        watchedState.form.feedback = errorsCodes[error.code] ?? i18nextInstance.t('errors.invalid')
+        watchedState.form.error = watchedState.form.feedback
+      })
+      .finally(() => {
+        watchedState.sendingProcess.status = 'idle'
+      })
+  }
 
   const onSubmittedForm = e => {
     e.preventDefault()
@@ -143,10 +143,12 @@ export default () => {
     form: {
       isValid: true,
       error: null,
+      feedback: null,
+      processState: 'filling',
     },
     sendingProcess: {
-      status: 'wait',
-      errors: null,
+      status: 'idle',
+      error: null,
     },
     feeds: [],
     posts: [],
