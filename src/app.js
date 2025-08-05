@@ -40,7 +40,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       watchedState.form = {
         isValid: false,
         error: 'Ссылка должна быть валидным URL',
-        feedback: 'Ссылка должна быть валидным URL'
+        feedback: 'error.invalidUrl'
       }
       return
     }
@@ -50,7 +50,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       watchedState.form = {
         isValid: false,
         error: 'RSS уже существует',
-        feedback: 'RSS уже существует'
+        feedback: 'error.duplicateUrl'
       }
       return
     }
@@ -88,7 +88,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
         watchedState.form = {
           isValid: true,
           error: null,
-          feedback: 'RSS успешно загружен'
+          feedback: 'success.loaded'
         }
       })
       .catch((error) => {
@@ -100,7 +100,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
         watchedState.form = {
           isValid: false,
           error: errorMessage,
-          feedback: errorMessage
+          feedback: 'error.network'
         }
       })
   }
