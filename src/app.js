@@ -9,8 +9,8 @@ import resources from './lang/langs.js'
 const language = 'ru'
 const allOriginsProxyUrl = 'https://allorigins.hexlet.app/get'
 const errorsCodes = {
-  ERR_NETWORK: 'network_error',
-  ECONNABORTED: 'request_timed_out'
+  ERR_NETWORK: 'network',
+  ECONNABORTED: 'timeout'
 }
 const defaultTimeout = 5000
 
@@ -39,8 +39,8 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
     if (!validate(url)) {
       watchedState.form = {
         isValid: false,
-        error: 'invalid_url',
-        feedback: 'error.invalidUrl'
+        error: 'validation.url',
+        feedback: 'validation.url'
       }
       return
     }
@@ -49,8 +49,8 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
     if (duplicateFeed) {
       watchedState.form = {
         isValid: false,
-        error: 'duplicate_url',
-        feedback: 'error.duplicateUrl'
+        error: 'errors.exists',
+        feedback: 'errors.exists'
       }
       return
     }
@@ -67,7 +67,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
     axiosInstance.get(getRssData(url), { timeout: 10000 })
       .then((response) => {
         if (!response.data.contents) {
-          throw new Error('invalid_rss')
+          throw new Error('invalid')
         }
         
         const { feed, posts } = parseRss(response.data.contents)
@@ -94,13 +94,13 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       .catch((error) => {
         watchedState.sendingProcess.status = 'failed'
         const errorKey = errorsCodes[error.code] || 
-                      (error.message.includes('invalid_rss') ? 
-                       'invalid_rss' : 
-                       'network_error')
+                      (error.message.includes('invalid') ? 
+                       'invalid' : 
+                       'network')
         watchedState.form = {
           isValid: false,
-          error: errorKey,
-          feedback: `error.${errorKey}`
+          error: `errors.${errorKey}`,
+          feedback: `errors.${errorKey}`
         }
       })
   }
@@ -175,7 +175,7 @@ export default () => {
       input: document.querySelector('#url-input'),
       btnSubmit: document.querySelector('button[type="submit"]')
     },
-    feedback: document.querySelector('.feedback'),
+    feedback: document.querySelector('.feedback'), // Убедитесь, что этот элемент есть в HTML
     feedsDiv: document.querySelector('.feeds'),
     postsDiv: document.querySelector('.posts'),
     modal: document.querySelector('#modal')

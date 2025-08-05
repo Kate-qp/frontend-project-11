@@ -12,11 +12,21 @@ const showMessage = (paragraph, message) => {
   updatedParagraph.textContent = message
 }
 
-const showErrorMessage = (paragraph, error, i18nextInstance) => {
-  const message = i18nextInstance.t(error.message)
-  clearMessage(paragraph)
-  showMessage(paragraph, message)
-  paragraph.classList.add('text-danger')
+const showFeedback = (element, feedback, i18n) => {
+  if (!feedback) {
+    clearMessage(element)
+    return
+  }
+  
+  const message = i18n.t(feedback)
+  clearMessage(element)
+  showMessage(element, message)
+  
+  if (feedback.startsWith('success')) {
+    element.classList.add('text-success')
+  } else if (feedback.startsWith('error') || feedback.startsWith('validation')) {
+    element.classList.add('text-danger')
+  }
 }
 
 const disableForm = (rssForm) => {
@@ -35,9 +45,6 @@ const handleProcess = (selectors, processStatus, i18nextInstance) => {
       clearMessage(selectors.feedback)
       break
     case 'added':
-      clearMessage(selectors.feedback)
-      selectors.feedback.classList.add('text-success')
-      showMessage(selectors.feedback, i18nextInstance.t('success.loaded'))
       enableForm(selectors.form)
       selectors.form.objectForm.reset()
       selectors.form.input.focus()
@@ -46,8 +53,6 @@ const handleProcess = (selectors, processStatus, i18nextInstance) => {
       disableForm(selectors.form)
       break
     case 'failed':
-      selectors.feedback.classList.add('text-danger')
-      showMessage(selectors.feedback, i18nextInstance.t('error.network'))
       enableForm(selectors.form)
       selectors.form.input.focus()
       break
@@ -166,10 +171,13 @@ export default (state, selectors, i18nextInstance) => onChange(state, (path, val
       handleProcess(selectors, state.sendingProcess.status, i18nextInstance)
       break
     case 'sendingProcess.errors':
-      showErrorMessage(selectors.feedback, state.sendingProcess.errors, i18nextInstance)
+      showFeedback(selectors.feedback, value?.message, i18nextInstance)
       break
     case 'form.error':
-      showErrorMessage(selectors.feedback, value, i18nextInstance)
+      showFeedback(selectors.feedback, value, i18nextInstance)
+      break
+    case 'form.feedback':  // Добавлена обработка feedback
+      showFeedback(selectors.feedback, value, i18nextInstance)
       break
     case 'loading':
       disableForm(selectors.form)
