@@ -37,7 +37,7 @@ const handleProcess = (selectors, processStatus, i18nextInstance) => {
     case 'added':
       clearMessage(selectors.feedback)
       selectors.feedback.classList.add('text-success')
-      showMessage(selectors.feedback, i18nextInstance.t('rss.added'))
+      showMessage(selectors.feedback, i18nextInstance.t('success.loaded'))
       enableForm(selectors.form)
       selectors.form.objectForm.reset()
       selectors.form.input.focus()
@@ -47,7 +47,7 @@ const handleProcess = (selectors, processStatus, i18nextInstance) => {
       break
     case 'failed':
       selectors.feedback.classList.add('text-danger')
-      showMessage(selectors.feedback, i18nextInstance.t('rss.invalid'))
+      showMessage(selectors.feedback, i18nextInstance.t('error.network'))
       enableForm(selectors.form)
       selectors.form.input.focus()
       break
@@ -172,7 +172,7 @@ export default (state, selectors, i18nextInstance) => onChange(state, (path, val
       showErrorMessage(selectors.feedback, value, i18nextInstance)
       break
     case 'loading':
-      disableForm()
+      disableForm(selectors.form)
       break
     case 'feeds':
       showFeeds(selectors.feedsDiv, state, i18nextInstance)

@@ -7,16 +7,16 @@ export default {
     feeds: {
       title: 'Фиды',
     },
-    rss: {
-      added: 'RSS успешно загружен',
-      invalid: 'Ресурс не содержит валидный RSS',
+    success: {
+      loaded: 'RSS успешно загружен',
     },
-    url: {
+    error: {
+      invalidUrl: 'Ссылка должна быть валидным URL',
+      duplicateUrl: 'RSS уже существует',
+      network: 'Ошибка сети',
+      timeout: 'Превышено время запроса',
+      invalidRss: 'Ресурс не содержит валидный RSS',
       required: 'Не должно быть пустым',
-      invalid: 'Ссылка должна быть валидным URL',
-      exists: 'RSS уже существует',
-    },
-    network_error: 'Ошибка сети',
-    request_timed_out: 'Превышено время запроса',
-  },
+    }
+  }
 }
