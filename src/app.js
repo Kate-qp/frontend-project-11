@@ -9,8 +9,8 @@ import resources from './lang/langs.js'
 const language = 'ru'
 const allOriginsProxyUrl = 'https://allorigins.hexlet.app/get'
 const errorsCodes = {
-  ERR_NETWORK: 'Ошибка сети',
-  ECONNABORTED: 'Таймаут запроса'
+  ERR_NETWORK: 'network_error',
+  ECONNABORTED: 'request_timed_out'
 }
 const defaultTimeout = 5000
 
@@ -39,7 +39,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
     if (!validate(url)) {
       watchedState.form = {
         isValid: false,
-        error: 'Ссылка должна быть валидным URL',
+        error: 'invalid_url',
         feedback: 'error.invalidUrl'
       }
       return
@@ -49,7 +49,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
     if (duplicateFeed) {
       watchedState.form = {
         isValid: false,
-        error: 'RSS уже существует',
+        error: 'duplicate_url',
         feedback: 'error.duplicateUrl'
       }
       return
@@ -67,7 +67,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
     axiosInstance.get(getRssData(url), { timeout: 10000 })
       .then((response) => {
         if (!response.data.contents) {
-          throw new Error('Invalid RSS feed')
+          throw new Error('invalid_rss')
         }
         
         const { feed, posts } = parseRss(response.data.contents)
@@ -93,14 +93,14 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       })
       .catch((error) => {
         watchedState.sendingProcess.status = 'failed'
-        const errorMessage = errorsCodes[error.code] || 
-                         (error.message.includes('Invalid RSS') ? 
-                          'Ресурс не содержит валидный RSS' : 
-                          'Ошибка сети')
+        const errorKey = errorsCodes[error.code] || 
+                      (error.message.includes('invalid_rss') ? 
+                       'invalid_rss' : 
+                       'network_error')
         watchedState.form = {
           isValid: false,
-          error: errorMessage,
-          feedback: 'error.network'
+          error: errorKey,
+          feedback: `error.${errorKey}`
         }
       })
   }
