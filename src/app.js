@@ -35,8 +35,6 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       error: null,
       feedback: null
     }
-    watchedState.sendingProcess.status = 'success'
-    console.log('RSS loaded successfully, feedback set')
 
     if (!validate(url)) {
       watchedState.form = {
@@ -86,7 +84,7 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
             visited: false
           }))
         ]
-        watchedState.sendingProcess.status = 'success'
+        watchedState.sendingProcess.status = 'idle'
         watchedState.form = {
           isValid: true,
           error: null,
@@ -177,7 +175,7 @@ export default () => {
       input: document.querySelector('#url-input'),
       btnSubmit: document.querySelector('button[type="submit"]')
     },
-    feedback: document.querySelector('.feedback'), // Убедитесь, что этот элемент есть в HTML
+    feedback: document.querySelector('.feedback'),
     feedsDiv: document.querySelector('.feeds'),
     postsDiv: document.querySelector('.posts'),
     modal: document.querySelector('#modal')

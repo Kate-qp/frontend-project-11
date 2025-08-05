@@ -22,9 +22,9 @@ const showFeedback = (element, feedback, i18n) => {
   clearMessage(element)
   showMessage(element, message)
   
-  if (feedback.startsWith('success')) {
+  if (feedback === 'success.loaded') {
     element.classList.add('text-success')
-  } else if (feedback.startsWith('error') || feedback.startsWith('validation')) {
+  } else {
     element.classList.add('text-danger')
   }
 }
@@ -162,14 +162,13 @@ const showModalPost = (posts, selectors) => {
 }
 
 export default (state, selectors, i18nextInstance) => onChange(state, (path, value) => {
-   console.log('Path changed:', path, 'New value:', value)
   switch (path) {
     case 'form.isValid':
       selectors.form.input.classList.toggle('is-invalid', !value)
       selectors.form.input.focus()
       break
     case 'sendingProcess.status':
-      handleProcess(selectors, state.sendingProcess.status, i18nextInstance)
+      handleProcess(selectors, value, i18nextInstance)
       break
     case 'sendingProcess.errors':
       showFeedback(selectors.feedback, value?.message, i18nextInstance)
@@ -179,18 +178,6 @@ export default (state, selectors, i18nextInstance) => onChange(state, (path, val
       break
     case 'form.feedback':
       showFeedback(selectors.feedback, value, i18nextInstance)
-      console.log('Feedback value:', value)
-      console.log('Translated message:', i18nextInstance.t(value))
-      if (value) {
-        selectors.feedback.textContent = i18nextInstance.t(value)
-        selectors.feedback.classList.toggle('text-success', value === 'success.loaded')
-        selectors.feedback.classList.toggle('text-danger', value !== 'success.loaded')
-        
-        console.log('Element content:', selectors.feedback.textContent)
-        console.log('Element classes:', selectors.feedback.className)
-      } else {
-        selectors.feedback.textContent = '';
-      }
       break
     case 'loading':
       disableForm(selectors.form)
