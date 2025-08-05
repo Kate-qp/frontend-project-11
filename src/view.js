@@ -1,14 +1,22 @@
 import onChange from 'on-change'
 
 const clearMessage = (paragraph) => {
-  paragraph.classList.remove('text-danger')
-  paragraph.classList.remove('text-success')
-  paragraph.textContent = ''
+  const updatedParagraph = paragraph
+  updatedParagraph.classList.remove('text-danger')
+  updatedParagraph.classList.remove('text-success')
+  updatedParagraph.textContent = ''
 }
 
-const showMessage = (paragraph, message, isSuccess) => {
-  paragraph.textContent = message
-  paragraph.classList.add(isSuccess ? 'text-success' : 'text-danger')
+const showMessage = (paragraph, message) => {
+  const updatedParagraph = paragraph
+  updatedParagraph.textContent = message
+}
+
+const showErrorMessage = (paragraph, error, i18nextInstance) => {
+  const message = i18nextInstance.t(error.message)
+  clearMessage(paragraph)
+  showMessage(paragraph, message)
+  paragraph.classList.add('text-danger')
 }
 
 const disableForm = (rssForm) => {
@@ -21,44 +29,30 @@ const enableForm = (rssForm) => {
   rssForm.btnSubmit.removeAttribute('disabled')
 }
 
-export const renderFeedback = (state, i18nextInstance) => {
-  const feedbackEl = document.querySelector('.feedback')
-  if (!feedbackEl) return
-  
-  // Очищаем только если нет важных сообщений
-  if (!state.form.feedback && !state.form.error) {
-    clearMessage(feedbackEl)
-  }
-
-  // Приоритет у сообщений из формы
-  if (state.form.feedback) {
-    showMessage(feedbackEl, state.form.feedback, state.form.isValid)
-  } else if (state.form.error) {
-    showMessage(feedbackEl, state.form.error, false)
-  } else if (state.sendingProcess.status === 'success') {
-    showMessage(feedbackEl, i18nextInstance.t('success.loaded'), true)
-  } else if (state.sendingProcess.status === 'failed') {
-    const errorKey = state.sendingProcess.error || 'errors.invalid'
-    showMessage(feedbackEl, i18nextInstance.t(errorKey), false)
-  }
-}
-
 const handleProcess = (selectors, processStatus, i18nextInstance) => {
   switch (processStatus) {
-    case 'sending':
-      disableForm(selectors.form)
+    case 'wait':
+      clearMessage(selectors.feedback)
       break
-    case 'success':
+    case 'added':
+      clearMessage(selectors.feedback)
+      selectors.feedback.classList.add('text-success')
+      showMessage(selectors.feedback, i18nextInstance.t('rss.added'))
       enableForm(selectors.form)
       selectors.form.objectForm.reset()
       selectors.form.input.focus()
       break
+    case 'loading':
+      disableForm(selectors.form)
+      break
     case 'failed':
+      selectors.feedback.classList.add('text-danger')
+      showMessage(selectors.feedback, i18nextInstance.t('rss.invalid'))
       enableForm(selectors.form)
       selectors.form.input.focus()
       break
     default:
-      break
+      throw new Error(`Unknown 'sendingProcess.status': ${processStatus}`)
   }
 }
 
@@ -168,16 +162,17 @@ export default (state, selectors, i18nextInstance) => onChange(state, (path, val
       selectors.form.input.classList.toggle('is-invalid', !value)
       selectors.form.input.focus()
       break
-    case 'form.feedback':
-    case 'form.error':
-      renderFeedback(state, i18nextInstance)
-      break
     case 'sendingProcess.status':
-      handleProcess(selectors, value, i18nextInstance)
-      renderFeedback(state, i18nextInstance)
+      handleProcess(selectors, state.sendingProcess.status, i18nextInstance)
       break
-    case 'sendingProcess.error':
-      renderFeedback(state, i18nextInstance)
+    case 'sendingProcess.errors':
+      showErrorMessage(selectors.feedback, state.sendingProcess.errors, i18nextInstance)
+      break
+    case 'form.error':
+      showErrorMessage(selectors.feedback, value, i18nextInstance)
+      break
+    case 'loading':
+      disableForm()
       break
     case 'feeds':
       showFeeds(selectors.feedsDiv, state, i18nextInstance)
@@ -192,6 +187,6 @@ export default (state, selectors, i18nextInstance) => onChange(state, (path, val
       openModal(value, state.posts, selectors.modal)
       break
     default:
-      break
+      throw new Error(`Unknown 'path': ${path}`)
   }
 })
