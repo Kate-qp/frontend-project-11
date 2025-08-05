@@ -35,6 +35,8 @@ const app = (selectors, initState, i18nextInstance, axiosInstance) => {
       error: null,
       feedback: null
     }
+    watchedState.sendingProcess.status = 'success'
+    console.log('RSS loaded successfully, feedback set')
 
     if (!validate(url)) {
       watchedState.form = {

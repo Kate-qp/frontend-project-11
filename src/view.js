@@ -162,6 +162,7 @@ const showModalPost = (posts, selectors) => {
 }
 
 export default (state, selectors, i18nextInstance) => onChange(state, (path, value) => {
+   console.log('Path changed:', path, 'New value:', value)
   switch (path) {
     case 'form.isValid':
       selectors.form.input.classList.toggle('is-invalid', !value)
@@ -176,8 +177,20 @@ export default (state, selectors, i18nextInstance) => onChange(state, (path, val
     case 'form.error':
       showFeedback(selectors.feedback, value, i18nextInstance)
       break
-    case 'form.feedback':  // Добавлена обработка feedback
+    case 'form.feedback':
       showFeedback(selectors.feedback, value, i18nextInstance)
+      console.log('Feedback value:', value)
+      console.log('Translated message:', i18nextInstance.t(value))
+      if (value) {
+        selectors.feedback.textContent = i18nextInstance.t(value)
+        selectors.feedback.classList.toggle('text-success', value === 'success.loaded')
+        selectors.feedback.classList.toggle('text-danger', value !== 'success.loaded')
+        
+        console.log('Element content:', selectors.feedback.textContent)
+        console.log('Element classes:', selectors.feedback.className)
+      } else {
+        selectors.feedback.textContent = '';
+      }
       break
     case 'loading':
       disableForm(selectors.form)
