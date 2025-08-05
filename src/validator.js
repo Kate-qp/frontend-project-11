@@ -1,24 +1,22 @@
-const validate = (url, existingUrls = []) => {
-  try {
-    if (!url || typeof url !== 'string' || url.trim() === '') {
-      throw new Error('Ссылка должна быть валидным URL')
-    }
+import * as yup from 'yup'
 
-    new URL(url.trim()) // Проверяем валидность URL
-    
-    if (existingUrls.some(existingUrl => existingUrl === url.trim())) {
-      throw new Error('RSS уже существует')
-    }
+yup.setLocale({
+  string: {
+    url: 'url.invalid',
+  },
+  mixed: {
+    required: 'url.required',
+    notOneOf: 'url.exists',
+  },
+})
 
-    return { isValid: true }
-  } catch (error) {
-    return { 
-      isValid: false,
-      error: error.message === 'RSS уже существует' 
-        ? error.message 
-        : 'Ссылка должна быть валидным URL'
-    }
-  }
+export default (newUrl, urls) => {
+  const schema = yup
+    .string()
+    .trim()
+    .required()
+    .url()
+    .notOneOf(urls)
+  return schema
+    .validate(newUrl, { abortEarly: true })
 }
-
-export default validate
